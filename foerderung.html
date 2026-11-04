@@ -990,10 +990,15 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
         <p class="ls-small ls-mt-2">Grundlage: angekündigte Änderung der BEG-Förderrichtlinie Wohngebäude (BEG WG Punkt 5.1) in Verbindung mit BEG EM Nr. 5.3, wirksam ab dem ersten Quartal 2027. Betroffen sind alle förderfähigen Heizungen, die nach dem 1. Januar 2008 in Betrieb genommen wurden – Wärmepumpen aller Art, Biomasseheizungen, Solarthermie sowie der Anschluss an ein Gebäude- oder Wärmenetz. Dargestellt in IKZ 8/2026, „BEG-Reform“. Im KfW-Merkblatt 458 (Stand 07/2026) ist die Änderung noch nicht enthalten.</p>
       </div>
     </div>
+    <!-- Rechenweg am Bildschirm eingeklappt (im Druck steht er als eigene Berichtskarte) -->
+    <details class="ls-details ls-mt-4 ls-no-print" id="rechenwegDetails">
+      <summary>So kommt der Zuschuss zustande <span class="ls-muted">· Rechenweg Schritt für Schritt</span></summary>
+      <div class="ls-stack ls-mt-2" id="rechenwegInhaltBildschirm"></div>
+    </details>
   </section>
 
-  <!-- 7 · Bericht: Grundlage (erscheint im Druck, weil das Formular nicht gedruckt wird) -->
-  <section class="ls-card ls-report" id="bericht" aria-labelledby="h-bericht">
+  <!-- 7 · Bericht: nur im Druck (ls-print-only). Am Bildschirm zeigen Formular und Ergebniskarte alles; der Rechenweg steht dort eingeklappt. -->
+  <section class="ls-card ls-report ls-print-only" id="bericht" aria-labelledby="h-bericht">
     <div class="ls-card__head"><h2 id="h-bericht">Grundlage</h2><span class="ls-card__sub">Eingaben zum Förderüberschlag</span></div>
     <div class="ls-report__meta">
       <div><span>Kunde / Projekt</span><b id="berichtProjekt">BV Muster</b></div>
@@ -1004,7 +1009,7 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
     <dl class="ls-dl" id="eingabenListe"></dl>
   </section>
 
-  <section class="ls-card ls-report" id="rechenweg" aria-labelledby="h-rechenweg">
+  <section class="ls-card ls-report ls-print-only" id="rechenweg" aria-labelledby="h-rechenweg">
     <div class="ls-card__head"><h2 id="h-rechenweg">So kommt der Zuschuss zustande</h2><span class="ls-card__sub">Rechenweg Schritt für Schritt</span></div>
     <div class="ls-stack" id="rechenwegInhalt"></div>
   </section>
@@ -1597,7 +1602,7 @@ function leer() {
   $('kpiSelbstBox').hidden = true; $('kpiWeitereBox').hidden = true; $('hinweisKosten').hidden = true;
   $('bausteine').innerHTML = '<dt>Hinweis</dt><dd>Eingaben prüfen, markierte Felder korrigieren.</dd>';
   $('fristText').textContent = 'Eingaben prüfen.'; $('stufenBody').innerHTML = ''; $('eeHinweis').hidden = true;
-  $('eingabenListe').innerHTML = '<dt>Hinweis</dt><dd>Eingaben unvollständig.</dd>'; $('rechenwegInhalt').innerHTML = '';
+  $('eingabenListe').innerHTML = '<dt>Hinweis</dt><dd>Eingaben unvollständig.</dd>'; $('rechenwegInhalt').innerHTML = ''; $('rechenwegInhaltBildschirm').innerHTML = '';
   $('ergebnisSub').textContent = 'Eingaben unvollständig';
 }
 
@@ -1658,12 +1663,14 @@ function aktualisiere() {
   if (e.datum >= EU_SPLIT) eing.push(['Wärmepumpe aus EU-Fertigung', e.eu ? 'ja (angekündigte Regel ab 2027)' : 'nein (angekündigte Regel ab 2027)']);
   eing.push(['Voraussichtlicher Zuschuss', '≈ ' + euro(r.zuschuss) + ' (' + prozent(r.satz) + ' von ' + euro(r.basis) + ')', true]);
   $('eingabenListe').innerHTML = dlHtml(eing).replace(/^<dl class="ls-dl">|<\/dl>$/g, '');
-  $('rechenwegInhalt').innerHTML =
+  var rechenwegHtml =
       '<div><h3>1 · Gebäude und Kosten</h3><div class="ls-mt-2 ls-stack ls-stack--tight">' + erklaerung1(e, r) + '</div></div>'
     + '<div><h3>2 · Bestehende Heizung</h3><div class="ls-mt-2 ls-stack ls-stack--tight">' + erklaerung2(e, r) + '</div></div>'
     + '<div><h3>3 · Einkommen des Haushalts</h3><div class="ls-mt-2 ls-stack ls-stack--tight">' + erklaerung3(e, r) + '</div></div>'
     + '<div><h3>4 · Fördersatz und Zuschuss</h3><div class="ls-mt-2 ls-stack ls-stack--tight">' + erklaerung4(e, r) + '</div></div>'
     + '<p class="ls-muted">Zwischenwerte gerundet dargestellt, gerechnet wird ungerundet. Überschlag nach Merkblatt 458; verbindlich ist der Förderbescheid der KfW.</p>';
+  $('rechenwegInhalt').innerHTML = rechenwegHtml;            /* Druck: Berichtskarte */
+  $('rechenwegInhaltBildschirm').innerHTML = rechenwegHtml;  /* Bildschirm: eingeklappt in der Ergebniskarte */
 }
 
 /* ---------- Start und Verdrahtung ---------- */
