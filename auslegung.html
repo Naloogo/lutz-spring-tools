@@ -996,6 +996,20 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
           <div class="ls-error" id="wpJazErr" hidden></div>
         </div>
       </div>
+      <!-- Erweiterung 2026-11-04 (Fabian, Schritt 10): zwei Antragsangaben zum Altgerät für den BEG-Antrag, ohne Rechenwirkung -->
+      <div class="ls-fields ls-mt-4">
+        <div class="ls-field">
+          <label class="ls-label" for="altIbn">Inbetriebnahme Altgerät</label>
+          <input class="ls-input" id="altIbn" type="date" max="2099-12-31">
+          <div class="ls-hint">Laut Schornsteinfeger-Bescheinigung. Angabe für den Förderantrag, ohne Rechenwirkung.</div>
+        </div>
+        <div class="ls-field">
+          <label class="ls-label" for="altLeistung">Leistung Altgerät</label>
+          <div class="ls-unit"><input class="ls-input ls-num" id="altLeistung" type="text" inputmode="decimal" placeholder="z. B. 24"><span>kW</span></div>
+          <div class="ls-hint">Nennwärmeleistung laut Typenschild. Angabe für den Förderantrag, ohne Rechenwirkung.</div>
+          <div class="ls-error" id="altLeistungErr" hidden></div>
+        </div>
+      </div>
       <div class="ls-field ls-mt-4">
         <span class="ls-label" id="altVlLabel">Bisheriger Vorlauf am kältesten Tag</span>
         <div class="ls-seg ls-seg--full" role="group" aria-labelledby="altVlLabel">
@@ -1588,6 +1602,7 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
    mit Vorgabe −12,7 °C, automatisch aus der Postleitzahl (normaussentemperatur.json); Heizflächen sind
    Pflichtwahl (alt rechnete ohne Wahl mit 45 °C); PDF-Dateiname „Wärmepumpenauslegung – Gerät – Kunde – Datum“;
    Zustand wird nach Neuladen vollständig wiederhergestellt (alt verlor die Kühlung).
+   Erweiterung Schritt 10 (Fabian 2026-11-04): Antragsangaben Altgerät (Inbetriebnahme laut Schornsteinfeger, Leistung laut Typenschild), ohne Rechenwirkung.
    Erweiterung Schritt 10 (Fabian 2026-10-25): Kaskaden-Planung (Aufstellung „Kaskade“, baugleiche Geräte, Anzahl automatisch oder von Hand), Referenzfall A6.
    Theme-Schalter, Datum und Drucken übernimmt ls.js (LS.start).
    ============================================================ */
@@ -1670,6 +1685,7 @@ function note(art, fett, text, nurBildschirm){
 }
 function dl(id, zeilen){ $(id).innerHTML = zeilen.map(function(z){ return '<dt'+(z[2]?' class="ls-dl__strong"':'')+'>'+esc(z[0])+'</dt><dd'+(z[2]?' class="ls-dl__strong"':'')+'>'+(z[3] ? z[1] : esc(z[1]))+'</dd>'; }).join(''); }
 function grad(n){ return LS.fmt(n, n % 1 ? 1 : 0) + ' °C'; }
+function datumDE(iso){ var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] : (iso || ''); }
 
 /* ---------- Sichtbarkeit nach Auswahl ---------- */
 function sichtbarkeit(){
@@ -1863,6 +1879,7 @@ function eingaben(){
   b.gasEta = parseFloat($('gasNutzungsgrad').value);
   b.wpStrom = b.bestand === 'wp' ? optional('wpStrom', 0, 100000, '4 500') : 0;
   b.wpJaz = b.bestand === 'wp' && b.wpStrom > 0 ? wert('wpJaz', 1.5, 6, '3,5') : (LS.lesen('wpJaz') || 3.5);
+  b.altIbn = $('altIbn').value; b.altLeistung = optional('altLeistung', 0.5, 1000, '24');
   b.altVlBekannt = seg('altVlBekannt');
   b.altVl = b.altVlBekannt === 'ja' ? wert('altVl', 30, 90, '60') : 0; b.altVlKomfort = seg('altVlKomfort');
   b.heizflaechen = seg('heizflaechen');
@@ -1887,7 +1904,7 @@ function eingaben(){
     [['wandA','uWandA',0,10000,'140'],['wandU','uWandU',0.1,5,'0,8'],['dachA','uDachA',0,10000,'90'],['dachU','uDachU',0.1,5,'0,4'],['fenA','uFensterA',0,5000,'25'],['fenU','uFensterU',0.1,6,'1,3'],['bodA','uBodenA',0,10000,'90'],['bodU','uBodenU',0.1,5,'0,6']]
       .forEach(function(p){ b.u[p[0]] = optional(p[1], p[2], p[3], p[4]); });
   }
-  var pflicht = [b.flaeche, b.wohneinheiten, b.personen, b.oelVerbrauch, b.gasVerbrauch, b.wpStrom, b.wpJaz, b.altVl, b.hkAnzahl, b.rtlAnzahl, b.beidesVlHk, b.beidesVlFbh, b.kuehlRaeume, b.kaskadeAnzahl, b.normAT, b.bivalenz, b.vorlauf].concat(Object.keys(b.u).map(function(k){ return b.u[k]; }));
+  var pflicht = [b.flaeche, b.wohneinheiten, b.personen, b.oelVerbrauch, b.gasVerbrauch, b.wpStrom, b.wpJaz, b.altVl, b.hkAnzahl, b.rtlAnzahl, b.beidesVlHk, b.beidesVlFbh, b.kuehlRaeume, b.kaskadeAnzahl, b.altLeistung, b.normAT, b.bivalenz, b.vorlauf].concat(Object.keys(b.u).map(function(k){ return b.u[k]; }));
   if(pflicht.some(function(v){ return v == null; })) return null;
   return b;
 }
@@ -2101,6 +2118,8 @@ function berichtSchreiben(b, e){
   if(b.bestand === 'oel'){ s.push(['Ölverbrauch', b.oelVerbrauch > 0 ? LS.fmt(b.oelVerbrauch,0)+' L/a' : 'unbekannt']); s.push(['Kesseltyp', optText('oelNutzungsgrad')]); }
   else if(b.bestand === 'gas'){ s.push(['Gasverbrauch', b.gasVerbrauch > 0 ? LS.fmt(b.gasVerbrauch,0)+(b.gasEinheit==='m3' ? ' m³/a' : ' kWh/a') : 'unbekannt']); s.push(['Kesseltyp', optText('gasNutzungsgrad')]); }
   else { s.push(['Stromverbrauch WP', b.wpStrom > 0 ? LS.fmt(b.wpStrom,0)+' kWh/a' : 'unbekannt']); s.push(['Jahresarbeitszahl', LS.fmt(b.wpJaz,1)]); }
+  if(b.altIbn) s.push(['Inbetriebnahme Altgerät', datumDE(b.altIbn)+' (laut Schornsteinfeger)']);
+  if(b.altLeistung > 0) s.push(['Leistung Altgerät', LS.fmt(b.altLeistung, b.altLeistung % 1 ? 1 : 0)+' kW (Typenschild)']);
   if(b.altVlBekannt === 'ja') s.push(['Bisheriger Vorlauf', grad(b.altVl)+' · '+({ja:'Räume wurden warm', knapp:'knapp, einzelne Räume kühl', nein:'zu kalt'}[b.altVlKomfort])]);
   var hfName = {hk:'Heizkörper', fbh:'Fußbodenheizung', beides:'Heizkörper + Fußbodenheizung'}[b.heizflaechen];
   s.push(['Heizflächen', hfName || 'nicht gewählt']);

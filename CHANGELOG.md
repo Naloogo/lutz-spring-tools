@@ -2,6 +2,10 @@
 
 Neueste Einträge oben. Format: Datum · Bereich · Fassung · Änderung · Nachweis.
 
+## 2026-11-04 · auslegung.html · Erweiterung Antragsangaben Altgerät (IBN-Datum, kW)
+- Wunsch Fabian (2026-11-04): Für den BEG-Antrag braucht es das Inbetriebnahme-Datum des Altgeräts laut Schornsteinfeger und seine Leistung in kW. In der Karte „Bestandsanlage“ stehen jetzt „Inbetriebnahme Altgerät“ (Datumsfeld) und „Leistung Altgerät“ (kW, 0,5–1 000, leer erlaubt); beide erscheinen im Bericht (Bestandsanlage und Heizflächen), bleiben im Browser-Speicher und in der Projektdatei (`felder`). Keine Rechenwirkung, Referenzfälle A1–A6 unverändert (Felder leer). Feldliste Felder 68–69, Erweiterung 5. Entscheidung in 06.
+- Hinweis: Die Erweiterung war zunächst irrtümlich im Förderrechner gebaut worden (Sitzung vom selben Tag); diese Änderung ist nicht committet und liegt im Git-Stash („foerderung: fehlplatzierte Erweiterung Altgerät“), sie kann verworfen werden.
+
 ## 2026-10-26 · auslegung.html · Nachbesserung nach Freigabe (Fabian): Bericht nur im Druck
 - Befund (Fabian, iPad/Mac): Die ausgewählte Wärmepumpe erschien zweimal, weil der kompakte Druckbericht (Zusammenfassung, Ergebniskarte, Zusatzpositionen, Rechenweg) auch am Bildschirm unter dem Ergebnis stand. Jetzt tragen die vier Berichtskarten `ls-print-only`: am Bildschirm zeigen Ergebniskarte und die Karte „Zusatzpositionen“ (mit Rechenweg) alles, im Druck erscheint nur der Bericht. Der Block Zusatzpositionen des Berichts bekommt die Klasse nur, wenn Positionen vorhanden sind (sonst würde `.ls-print-only` das `hidden` im Druck überstimmen). Rechnung unverändert; PDFs A1/A2 als Kontrolle neu gedruckt. Hinweis: Safari kann die alte Fassung aus dem Cache zeigen, auf dem iPad die Seite erneut laden.
 
