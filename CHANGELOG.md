@@ -2,6 +2,9 @@
 
 Neueste Einträge oben. Format: Datum · Bereich · Fassung · Änderung · Nachweis.
 
+## 2026-11-04 · Designsystem · 2.1.3
+- Einheit in Kennzahlen auf Navy-Karten (`.ls-card--navy .ls-kpi__value small`) jetzt Weiß mit 85 % Deckkraft statt grauem Textton; Anlass: Backlog (Fabian, „kW“ auf der Ergebniskarte der Auslegung kaum lesbar). `python3 _build/build.py` (Styleguide) und `python3 _build/inline.py` über alle Tools; sonst keine Änderung an den Tools.
+
 ## 2026-11-04 · auslegung.html · Erweiterung Antragsangaben Altgerät (IBN-Datum, kW)
 - Wunsch Fabian (2026-11-04): Für den BEG-Antrag braucht es das Inbetriebnahme-Datum des Altgeräts laut Schornsteinfeger und seine Leistung in kW. In der Karte „Bestandsanlage“ stehen jetzt „Inbetriebnahme Altgerät“ (Datumsfeld) und „Leistung Altgerät“ (kW, 0,5–1 000, leer erlaubt); beide erscheinen im Bericht (Bestandsanlage und Heizflächen), bleiben im Browser-Speicher und in der Projektdatei (`felder`). Keine Rechenwirkung, Referenzfälle A1–A6 unverändert (Felder leer). Feldliste Felder 68–69, Erweiterung 5. Entscheidung in 06.
 - Hinweis: Die Erweiterung war zunächst irrtümlich im Förderrechner gebaut worden (Sitzung vom selben Tag); diese Änderung ist nicht committet und liegt im Git-Stash („foerderung: fehlplatzierte Erweiterung Altgerät“), sie kann verworfen werden.

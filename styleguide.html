@@ -15,7 +15,7 @@
 /* ============================================================
    design.css · Lutz Spring GmbH · Heizung · Sanitär · Wärmepumpen
    Gemeinsames Designsystem für alle internen HTML-Tools.
-   Version 2.1.2 · Stand 2026-10-25
+   Version 2.1.3 · Stand 2026-11-04
    Einbinden:  Beim Veröffentlichen fügt _build/inline.py diese Datei in jedes
                Tool ein (Marker design.css:start / design.css:end im HTML).
                Ein Tool bleibt so eine einzelne Datei.
@@ -345,6 +345,7 @@ p + p { margin-top: var(--ls-s3); }
 .ls-card--navy .ls-kpi__value, .ls-card--navy .ls-accent { color: var(--ls-yellow); }
 .ls-card--navy .ls-kpi__label, .ls-card--navy .ls-muted { color: rgba(255,255,255,0.75); }
 .ls-card--navy .ls-kpi { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }  /* Kennzahlen auf Navy, 2.1.1 */
+.ls-card--navy .ls-kpi__value small { color: rgba(255,255,255,0.85); }  /* Einheit auf Navy lesbar statt grau, 2.1.3 */
 .ls-card--navy .ls-btn--primary { background: var(--ls-yellow); color: #1d1d1f; }
 .ls-card--navy .ls-btn--primary:hover { background: #fff566; }
 
