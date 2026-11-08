@@ -5,7 +5,7 @@ Zweck: Nachweis, dass ein Umbau nichts an der Rechnung ändert (UMBAU-ABLAUF.md 
 
 Die Spalte „erwartet (Formel)“ ist aus dem Rechenteil der Altfassung nachgerechnet (Python, gleiche Formeln und Rundung) und dient nur als Plausibilitätsprüfung; maßgeblich ist die Messung in der Altfassung.
 
-Testfälle je Tool: A1–A6 `auslegung.html` (angelegt 2026-10-25; A5 nur neu, A6 Erweiterung Kaskade) · K1–K6 `kostenvergleich.html` · F1–F6 `foerderung.html` (angelegt 2026-10-26) · H1–H6 `heizkoerper.html` · B1–B3 `bestandsaufnahme.html`. Die Fälle der noch nicht begonnenen Tools werden beim jeweiligen Umbau (Schritt 2) angelegt.
+Testfälle je Tool: A1–A6 `auslegung.html` (angelegt 2026-10-25; A5 nur neu, A6 Erweiterung Kaskade) · K1–K6 `kostenvergleich.html` · F1–F6 `foerderung.html` (angelegt 2026-10-26) · H1–H6 `heizkoerper.html` (angelegt 2026-11-08) · B1–B3 `bestandsaufnahme.html`. Die Fälle der noch nicht begonnenen Tools werden beim jeweiligen Umbau (Schritt 2) angelegt.
 
 ---
 
@@ -377,7 +377,119 @@ Rechenweg: kein Klimabonus (EE) · Einkommen 45 000 → 10 % · 30 + 0 + 10 = 40
 | EE-Hinweis | – | sichtbar: „nach dem 1. Januar 2008 … ab 2027 entfallen“ | sichtbar: „… wurde 2012 eingebaut. Für solche Anlagen soll die Förderung beim Austausch ab 2027 entfallen — betroffen sind alle, die nach dem 1. Januar 2008 eingebaut wurden. Heute wird Ihr Tausch noch gefördert …“ | | |
 
 ## heizkoerper.html · H1–H6
-Noch anzulegen beim Umbau des Tools (Schritt 2). Je Fall: Eingaben, alle Kennzahlen, gewählte Artikel, Bestellnummern, Lagerabgleich-Status.
+
+Altfassung: `alt/heizkoerper_2026-11-08.html` (byteidentisch mit dem Git-Stand f754073) · Feldliste: `tests/feldliste-heizkoerper.md`.
+Angelegt 2026-11-08 (Schritt 2). Spalte „erwartet (Formel)“: der Rechenkern der Altfassung (Datentabellen, `DB()`, `dTlog`, `leistung`, `requiredVL`, `erreichbareRaumtemp`, Korb-Funktionen, Konsolen, `gaebBezeichnung`) wurde unverändert aus der HTML-Datei ausgeschnitten und in Node 24 ausgeführt; `runFit` (Filter, Lagerabgleich, Sortierung) und die Raumspeicherung sind dort Zeile für Zeile nachgebaut (Skript `erwartet.mjs`, Scratchpad der Sitzung, nicht im Repo). Spalte „alt“ wird in Schritt 3 in der unveränderten Altfassung gemessen, „neu“ in Schritt 5.
+Gemeinsame Vorgaben: `lager.json` geladen (Stand 2026-08-12, 14 Positionen, 14 Stück; lokaler Server, weil `fetch` lokal nicht geht) · Norm-Außentemperatur −12,7 °C in jedem Fall ausdrücklich gesetzt (Altfassung-Standard −14) · Reserve ausdrücklich gesetzt (Altfassung-Standard 15 %) · Kunde/Projekt „BV Muster“ · Werte wie die Altfassung sie anzeigt (Punkt-Dezimale „24.7“, „%“ ohne Leerzeichen); die Neufassung formatiert mit Komma, das gilt als Darstellungs-, nicht als Rechenabweichung.
+Ablauf je Fall: Eingaben setzen → Ansicht wählen → „Passende Heizkörper suchen“ → Zeile anklicken (Auswahlkarte) → ggf. Konsole/Haken → „+ Raum speichern“ → Bericht drucken als `tests/pdf/heizkoerper_Hn_alt.pdf` (Projekt mit nur diesem Raum). Zusätzlich H-Gesamt: alle sechs Räume in einem Projekt, Bestellübersicht im Bericht und GAEB-Datei (`tests/pdf/heizkoerper_HG_alt.pdf`, X83 nur geprüft, nicht abgelegt).
+ΔT<sub>log</sub> 50/40/20 = 24,7 K (Faktor zu 75/65/20: (24,66/49,83)<sup>n</sup> ≈ 0,40 bei n = 1,30, Firmengehirn 05).
+
+### H1 · Kermi therm-x2 Profil, K & V, kein Lagertreffer (Raum „Wohnzimmer“, EG)
+Eingaben: Kermi therm-x2 · Bauform Profil · Heizlast 1 100 W · Reserve 0 % · Raum 20 °C · Norm-AT −12,7 °C · 50/40 °C · max. 600 × 1400 mm · Typen 11/22/33 · K & V · Anschluss rechts · ein Heizkörper · Ansicht ① · Empfehlung (erste Zeile) anklicken · Wandkonsole · speichern.
+Rechenweg: Bedarf 1 100 W · ΔT<sub>log</sub> 24,7 K · Typ 33 BH 500: 1 944 W/m × 1,4 m = 2 722 W × (24,66/49,83)<sup>1,2801</sup> = 1 106 W ≥ 1 100 W.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Auslegungsbasis | – | 1100 W · +0% → 1100 W · 20 °C · 50/40 °C · ΔT log 24.7 K · 600×1400 mm | | | |
+| Treffer | Anzahl | 6 (Typ 33: 500×1400 K/V, 600×1300 K/V, 600×1400 K/V) | | | |
+| Reihenfolge | – | 1. Typ 33 K 500×1400 · 2. Typ 33 V 500×1400 · 3. K 600×1300 · 4. V 600×1300 · 5. K 600×1400 · 6. V 600×1400 | | | |
+| Empfehlung | – | Typ 33 K 500×1400, BT 155 · 1106 W · 101% · knapp | | | |
+| Weitere Zeilen | W / % | 600×1300: 1176 W · 107% · knapp · 600×1400: 1266 W · 115% · ok | | | |
+| Auswahlkarte | – | therm-x2 Profil-K Typ 33 · Kermi therm-x2 Profil-K (FK0) Typ 33, 500 × 1400 mm, BT 155 mm · Nabenabstand 446 mm | | | |
+| Bestellnummer | – | FK0330514 | | | |
+| Konsole (Wand) | – | Schnellmontageset Art. 1815977 (2 Konsolen) | | | |
+| Lagertreffer | Anzahl | 0; Hinweis „Weitere Lagerware vorhanden, aber hier nicht einsetzbar“ mit 14 Positionen | | | |
+| Lager-Gründe (Auszug) | – | Typ 22 V 600×600: andere Anschlussseite (Lager links, gebraucht rechts) · Typ 33 V 600×1000: deckt die Heizlast nicht (905 W < 1100 W) · Typ 33 V 605×1005: andere Bauform (Lager plan, ausgelegt profil) · Typ 22 V 300×1600: passt nicht in die Fläche (max. 600×1400 mm) · Typ 33 V 600×1200: deckt nicht (1086 W < 1100 W) · Typ 22 K 500×700: deckt nicht (408 W) | | | |
+| Gespeicherter Raum | – | Leistung 1106 W · Deckung 101% · nötige VL 49.9 °C (Spreizung 10 K) · erreichbare Raumtemp. 20.1 °C bei 1102 W · QN 2722 W | | | |
+| GAEB-Kurztext (ohne Artikelstamm) | – | KERMI X2 Profil-K Typ33 BH500x155x1400mm QN2722, weiß, 10 bar, m. Abdeckung | | | |
+
+### H2 · Kermi Profil, Lagertreffer bevorzugt, „aus Lager“ (Raum „Küche“, ohne Etage)
+Eingaben: wie H1, aber Heizlast 900 W · Reserve 0 % · Ansicht ① · Empfehlung anklicken (Lagertreffer, Haken „aus dem Lager entnehmen“ bleibt) · Wandkonsole · speichern.
+Rechenweg: Typ 33 BH 600 BL 1000: 2 236 W × (24,66/49,83)<sup>1,2866</sup> = 905 W ≥ 900 W; Lagerposition Typ 33 V 600×1000 rechts, 1 Stück.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Treffer | Anzahl | 20, davon 4 Lagertreffer (oben, markiert) | | | |
+| Reihenfolge (erste 6) | – | 1. Typ 33 V 600×1000 📦 (rechts) · 2. Typ 33 K 500×1200 📦 · 3. Typ 33 V 500×1200 📦 (rechts) · 4. Typ 33 V 600×1200 📦 (rechts) · 5. Typ 33 K 400×1400 · 6. Typ 33 V 400×1400 | | | |
+| Empfehlung | – | Typ 33 V 600×1000, BT 155 · 905 W · 101% · knapp · Lager 1 St. (rechts) | | | |
+| Lager-Hinweis | – | „4 passende Heizkörper liegen auf Lager und werden bevorzugt vorgeschlagen“ | | | |
+| Lager nicht nutzbar | Anzahl | 10 (Anschlussseite 1 · Bauform plan 2 · Fläche 4 · deckt nicht 3: 500×1000 790 W, 22 K 500×700 408 W, 22 K 500×800 466 W) | | | |
+| Auswahlkarte | – | therm-x2 Profil-V Typ 33 (R) · Kermi therm-x2 Profil-V (FTV) Typ 33, 600 × 1000 mm, BT 155 mm, Anschluss rechts · Nabenabstand 546 mm · „Liegt im Lager – aus dem Lager entnehmen“ | | | |
+| Bestellnummer | – | FTV330601001R1K | | | |
+| Konsole (Wand) | – | Schnellmontageset Art. 1815979 (2 Konsolen) | | | |
+| Gespeicherter Raum | – | 905 W · 101% · nötige VL 49.9 °C · erreichbare Raumtemp. 20.1 °C bei 902 W · QN 2236 W · Kennzeichen „aus Lager“, Anschluss rechts | | | |
+| Bericht | – | Raum unter „Aus dem Lager entnehmen“ (1 Stück), nicht unter „Zu bestellende Heizkörper“; Konsolen 1× 1815979 | | | |
+
+### H3 · Kermi Plan, nur Ventil links, Bestandstyp 22 ohne Treffer, Reserve 10 %, Standkonsole, Lagertreffer links (Raum „Bad“, 1. OG)
+Eingaben: Kermi therm-x2 · Bauform Plan · Heizlast 900 W · Reserve 10 % · Raum 20 °C · Norm-AT −12,7 °C · 50/40 °C · max. 605 × 1205 mm · Typen 11/22/33 · nur Ventil (FTV) · Anschluss links · Bestand-Typ 22 · Ansicht ① · Empfehlung anklicken · Standkonsole wählen · speichern.
+Rechenweg: Bedarf 990 W · Typ 33 Plan BH 605 BL 1105: 2 212,55 W/m × 1,105 m = 2 445 W × (24,66/49,83)<sup>1,28</sup> = 994 W ≥ 990 W · Typ 22 Plan 605×1205: 1 829 W × 0,4036 = 738 W < 990 W → kein Bestandstyp-Treffer.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Auslegungsbasis | – | 900 W · +10% → 990 W · ΔT log 24.7 K · 605×1205 mm | | | |
+| Treffer | Anzahl | 2: 1. Typ 33 V 605×1105 📦 (links) 994 W · 110% · ok · 2. Typ 33 V 605×1205 1084 W · 120% · ok | | | |
+| Bestand-Hinweis | – | „Bestand Typ 22 gewählt, aber kein Typ 22 deckt die Heizlast in der Fläche“ (Ausweich-Hinweis) | | | |
+| Lager nicht nutzbar (Auszug) | – | Typ 33 V 605×1005: andere Anschlussseite (Lager rechts, gebraucht links) · Typ 33 V 505×1805: passt nicht in die Fläche (max. 605×1205 mm) · alle Profil-Positionen: andere Bauform (Lager profil, ausgelegt plan) – 13 Positionen | | | |
+| Auswahlkarte | – | therm-x2 Plan-V Typ 33 (L) · Kermi therm-x2 Plan-V (PTV) Typ 33, 605 × 1105 mm, BT 155 mm, Anschluss links · Nabenabstand 551 mm | | | |
+| Bestellnummer | – | PTV330601101L1K | | | |
+| Konsole (Stand) | – | Standkonsole innenliegend Art. ZB01380002 (2 Stück) + Fertigboden-Blende Art. ZB00290001 (2 Stück) | | | |
+| Gespeicherter Raum | – | 994 W · Deckung 110% · nötige VL 49.9 °C · erreichbare Raumtemp. 21.2 °C bei 932 W · QN 2445 W · aus Lager, Anschluss links | | | |
+| GAEB-Kurztext | – | KERMI X2 Plan-V Typ33 BH605x155x1105mm QN2445, weiß, 10 bar, m. Abdeckung | | | |
+
+### H4 · Kermi Verteo-Profil, Typ 20/21/22, 45/35 °C, Raum 22 °C, Ansicht ② (Raum „Flur“, EG)
+Eingaben: Hersteller Kermi Verteo (hebt max. BH/BL automatisch auf 2400/800) · danach max. 2000 × 800 mm setzen · Bauform Profil · Typ 10 abwählen · Heizlast 700 W · Reserve 0 % · Raum 22 °C · Norm-AT −12,7 °C · 45/35 °C · Ansicht ① Empfehlung anklicken · Ansicht ② ablesen · speichern.
+Rechenweg: ΔT<sub>log</sub>(45/35/22) = 17,5 K · Verteo Typ 22 BH 1800 BL 800: 2 957 W × (17,53/49,83)<sup>1,34</sup> = 729 W ≥ 700 W · Typ 22 2000×800: 3 172 W → 782 W.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Auslegungsbasis | – | 700 W · 22 °C · 45/35 °C · ΔT log 17.5 K · 2000×800 mm | | | |
+| Treffer ① | Anzahl | 2: 1. Verteo Typ 22 1800×800 BT 100 · 729 W · 104% · knapp · 2. Verteo Typ 22 2000×800 · 782 W · 112% · ok | | | |
+| Ansicht ② erste Zeilen | °C | Typ 22 2000×800 → 43.6 · Typ 22 1800×800 → 44.5 · Typ 22 2000×700 → 45.2 · Typ 22 1600×800 → 46.0 (alle „WP-tauglich“) | | | |
+| Auswahlkarte | – | Verteo-Profil Typ 22 · Kermi Verteo-Profil (FSN) Typ 22, 1800 × 800 mm, BT 100 mm, weiß RAL 9016 | | | |
+| Bestellnummer | – | FSN221808 | | | |
+| Konsole | – | Verteo Wandkonsolen-Set lang Art. 1816042 (1 Set) | | | |
+| Gespeicherter Raum | – | 729 W · 104% · nötige VL 44.5 °C (Spreizung 10 K) · erreichbare Raumtemp. 22.4 °C bei 708 W · QN 2957 W | | | |
+| GAEB-Kurztext | – | Klartext (kein therm-x2-Format): Kermi Verteo-Profil (FSN) Typ 22, 1800 × 800 mm, BT 100 mm, weiß RAL 9016 | | | |
+
+### H5 · Mehrere Heizkörper je Raum, Kermi Profil nur Kompakt (Raum „Wohnküche“, EG)
+Eingaben: Kermi therm-x2 Profil · Heizlast 2 400 W · Reserve 0 % · Raum 20 °C · Norm-AT −12,7 °C · 50/40 °C · max. 600 × 1000 mm · nur Kompakt (FK0) · „Mehrere Heizkörper“ · Ansicht ① · Typ 33 K 600×1000 anklicken → „+ zum Raum hinzufügen“, Menge auf 2 · Typ 22 K 600×1000 anklicken → hinzufügen · Ansicht ② und ③ ablesen · speichern.
+Rechenweg: Typ 33 600×1000 = 905 W, Typ 22 600×1000 = 1 666 W × 0,4027 = 671 W · Summe 2 × 905 + 671 = 2 481 W ≥ 2 400 W · Deckung 2 481 / 2 400 = 103 %.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Treffer ① (Multi) | Anzahl | 98 (alle, die in die Fläche passen); erste Zeilen Lager: Typ 22 K 500×800 📦 466 W · Typ 22 K 500×700 📦 408 W · dann Typ 33 K 600×1000 905 W · 600×900 814 W · 500×1000 790 W | | | |
+| Korb | – | 2× therm-x2 Profil-K Typ 33 600×1000 (FK0330610, 2×905 = 1810 W) + 1× Profil-K Typ 22 600×1000 (FK0220610, 671 W) | | | |
+| Deckung Korb | W / % | 2481 W von 2400 W · 103% · „Heizlast gedeckt“ | | | |
+| Ansicht ② (Summe) | °C | nötige gemeinsame VL 49.4 (RL 39.4, Spreizung 10 K) · „WP-tauglich“ | | | |
+| Ansicht ③ (Summe) | °C | erreichbare Raumtemperatur 20.4 (+0.4 K) bei 2429 W Summen-Abgabe · „Wunschtemperatur wird gehalten“ | | | |
+| Gespeicherter Raum | – | 3 HK · Σ 2481 W · Deckung 103% ✓ · nötige VL 49.4 · erreichbare Temp. 20.4 · QN 2236 / 1666 W | | | |
+| Konsolen | – | je HK Schnellmontageset 1815979; Bericht/GAEB summiert 3× 1815979 | | | |
+| Bericht | – | Zu bestellen: 2× FK0330610, 1× FK0220610 · Konsolen 3× 1815979 | | | |
+
+### H6 · Zehnder Charleston, kein Treffer in ①, Ansicht ③ mit Kundenhinweis (Raum „Schlafzimmer“, DG)
+Eingaben: Hersteller Zehnder (hebt max. BH auf 1800) · danach max. 600 × 1000 mm setzen · Heizlast 1 600 W · Reserve 0 % · Raum 21 °C · Norm-AT −12,7 °C · 50/40 °C · alle Säulenzahlen · Ansicht ① (leer) · Ansicht ③ · erste Zeile anklicken · speichern (Notiz wird automatisch gefüllt).
+Rechenweg: ΔT<sub>log</sub>(50/40/21) = 23,6 K · 6-Säuler BH 600, 21 Glieder (966 mm ≤ 1000): 117 W × 21 = 2 457 W × (23,65/49,83)<sup>1,30</sup> = 932 W (58 % bei 21 °C) · Gleichgewicht: Heizlast(t<sub>L</sub>) = 1 600 × (t<sub>L</sub> + 12,7)/(33,7) = Abgabe(t<sub>L</sub>) → t<sub>L</sub> = 14,4 °C bei 1 287 W.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Ansicht ① | – | Leerzustand „Kein Heizkörper deckt bei 50/40 °C die Heizlast innerhalb der Fläche 600×1000 mm“; Lagerliste leer (kein Zehnder im Lager) | | | |
+| Ansicht ③ erste Zeilen | °C | 6-Säuler 600×966 → 14.4 (−6.6 K, GG 1287 W) · 6-Säuler 550×966 → 13.4 (GG 1240 W) · 5-Säuler 600×966 → 12.3 (GG 1188 W) · 6-Säuler 500×966 → 12.3 (GG 1188 W) · 5-Säuler 550×966 → 11.3 | | | |
+| Bewertung | – | alle Zeilen rot mit Wert („14.4 °C“ usw.), keine „Wunsch erreicht“ | | | |
+| Auswahlkarte | – | Charleston 6060-21 · Zehnder Charleston 6-Säuler, BH 600 mm, 21 Glieder (BL 966 mm), BT 210 mm, weiß RAL 9016 · 21 Glieder × 46 mm | | | |
+| Bestellnummer | – | 6060-21 · weiß | | | |
+| Konsole | – | keine (Zehnder ohne Konsolenlogik) | | | |
+| Gespeicherter Raum | – | Leistung 932 W · Deckung 58% · nötige VL 62.1 °C · erreichbare Raumtemp. 14.4 °C bei 1287 W · QN 2457 W | | | |
+| Notiz (automatisch) | – | „Bitte beachten Sie: Die in diesem Raum maximal möglichen Installationsflächen reichen leider nicht aus, um Ihre Wunschtemperatur von 21 °C vollständig zu erreichen. Der gewählte Heizkörper deckt rund 80 % der benötigten 1600 Watt ab. Bei einer Norm-Außentemperatur von -12.7 °C stellt sich damit eine Raumtemperatur von etwa 14.4 °C ein. …“ (80 % = 1287 / 1600) | | | |
+
+### H-Gesamt · alle sechs Räume in einem Projekt „BV Muster“ (Bericht und GAEB)
+Erwartet: Bericht gruppiert nach Etagen EG (Wohnzimmer, Flur, Wohnküche), 1. OG (Bad), DG (Schlafzimmer), „Ohne Etagenangabe“ (Küche). Bestellübersicht: Zu bestellende Heizkörper 1× FK0330514 · 1× FSN221808 · 2× FK0330610 · 1× FK0220610 · 1× „6060-21 · weiß“ = 6 Stück · Aus dem Lager entnehmen 1× FTV330601001R1K (Küche), 1× PTV330601101L1K (Bad) = 2 Stück · Konsolen: 1× 1815977, 1× 1815979 (H2) + 3× 1815979 (H5) = 4× 1815979, 1× 1816042, 2× ZB01380002, 2× ZB00290001 · Bestandsheizkörper: keine. GAEB: Pos. 1 mit sechs Raum-Untergruppen, Pos. 2 Installationsmaterial (5 Artikelzeilen), Pos. 3 ohne „Arbeitszeit Monteur“ (Montagezeit leer); XML wohlgeformt.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Zu bestellende Heizkörper | Stück | 6 | | | |
+| Aus dem Lager entnehmen | Stück | 2 | | | |
+| Konsolen | Zeilen / Stück | 5 Zeilen · 1 + 4 + 1 + 2 + 2 = 10 Stück | | | |
+| GAEB-Positionen | – | Pos. 1: 6 Räume, 7 Items · Pos. 2: 5 Items · Pos. 3: 2 Items | | | |
 
 ## bestandsaufnahme.html · B1–B3
 Noch anzulegen beim Umbau des Tools (Schritt 2). Je Fall: erfasste Positionen und erzeugte `lager.json` (nur Artikel und Stückzahlen).
