@@ -18,7 +18,7 @@
 /* ============================================================
    design.css · Lutz Spring GmbH · Heizung · Sanitär · Wärmepumpen
    Gemeinsames Designsystem für alle internen HTML-Tools.
-   Version 2.1.3 · Stand 2026-11-04
+   Version 2.1.4 · Stand 2026-11-09 (Markenknopf .ls-btn--brand)
    Einbinden:  Beim Veröffentlichen fügt _build/inline.py diese Datei in jedes
                Tool ein (Marker design.css:start / design.css:end im HTML).
                Ein Tool bleibt so eine einzelne Datei.
@@ -59,6 +59,11 @@
   --ls-primary-hover: var(--ls-navy-2);
   --ls-primary-active: var(--ls-navy-3);
   --ls-on-primary:  #ffffff;
+  /* Markenknopf (.ls-btn--brand, 2.1.4): Projektaktion „Neues Projekt“ – hell Navy, dunkel Logo-Gelb [BESTÄTIGT Fabian 2026-11-09] */
+  --ls-brand-btn:        var(--ls-navy);
+  --ls-brand-btn-hover:  var(--ls-navy-2);
+  --ls-brand-btn-active: var(--ls-navy-3);
+  --ls-on-brand-btn:     #ffffff;
   --ls-link:        var(--ls-navy);
   --ls-focus:       var(--ls-navy);
   --ls-focus-ring:  rgba(26, 43, 74, 0.25);
@@ -132,6 +137,7 @@
     --ls-primary:     #4f75b8;
     --ls-primary-hover: #5d83c6;
     --ls-primary-active: #43669f;
+    --ls-brand-btn: var(--ls-yellow); --ls-brand-btn-hover: #fff7a8; --ls-brand-btn-active: #e6da00; --ls-on-brand-btn: #1a2b4a;
     --ls-link:        #8fb3f0;
     --ls-focus:       #8fb3f0;
     --ls-focus-ring:  rgba(143, 179, 240, 0.30);
@@ -168,6 +174,7 @@
   --ls-primary:     #4f75b8;
   --ls-primary-hover: #5d83c6;
   --ls-primary-active: #43669f;
+  --ls-brand-btn: var(--ls-yellow); --ls-brand-btn-hover: #fff7a8; --ls-brand-btn-active: #e6da00; --ls-on-brand-btn: #1a2b4a;
   --ls-link:        #8fb3f0;
   --ls-focus:       #8fb3f0;
   --ls-focus-ring:  rgba(143, 179, 240, 0.30);
@@ -463,6 +470,11 @@ p + p { margin-top: var(--ls-s3); }
 .ls-btn--ghost:hover { background: var(--ls-surface-3); }
 .ls-btn--danger { background: var(--ls-surface); color: var(--ls-danger); border-color: var(--ls-danger); }
 .ls-btn--danger:hover { background: var(--ls-danger-bg); }
+/* Markenknopf (2.1.4): hell Navy mit weißer Schrift, dunkel Logo-Gelb mit Navy-Schrift. Nur für die Projektaktion „Neues Projekt“;
+   er ist kein zweiter Primärknopf (Regel 2.4) und kein Zustand (Regel 2.3). */
+.ls-btn--brand { background: var(--ls-brand-btn); color: var(--ls-on-brand-btn); border-color: transparent; }
+.ls-btn--brand:hover { background: var(--ls-brand-btn-hover); }
+.ls-btn--brand:active { background: var(--ls-brand-btn-active); }
 .ls-btn--sm { min-height: 32px; padding: 0 var(--ls-s3); font-size: var(--ls-fs-sm); border-radius: var(--ls-r-sm); }
 .ls-btn--lg { min-height: 48px; padding: 0 var(--ls-s5); font-size: var(--ls-fs-lg); }
 .ls-btn--block { width: 100%; }

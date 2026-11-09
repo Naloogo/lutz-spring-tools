@@ -16,7 +16,7 @@
 /* ============================================================
    design.css · Lutz Spring GmbH · Heizung · Sanitär · Wärmepumpen
    Gemeinsames Designsystem für alle internen HTML-Tools.
-   Version 2.1.3 · Stand 2026-11-04
+   Version 2.1.4 · Stand 2026-11-09 (Markenknopf .ls-btn--brand)
    Einbinden:  Beim Veröffentlichen fügt _build/inline.py diese Datei in jedes
                Tool ein (Marker design.css:start / design.css:end im HTML).
                Ein Tool bleibt so eine einzelne Datei.
@@ -57,6 +57,11 @@
   --ls-primary-hover: var(--ls-navy-2);
   --ls-primary-active: var(--ls-navy-3);
   --ls-on-primary:  #ffffff;
+  /* Markenknopf (.ls-btn--brand, 2.1.4): Projektaktion „Neues Projekt“ – hell Navy, dunkel Logo-Gelb [BESTÄTIGT Fabian 2026-11-09] */
+  --ls-brand-btn:        var(--ls-navy);
+  --ls-brand-btn-hover:  var(--ls-navy-2);
+  --ls-brand-btn-active: var(--ls-navy-3);
+  --ls-on-brand-btn:     #ffffff;
   --ls-link:        var(--ls-navy);
   --ls-focus:       var(--ls-navy);
   --ls-focus-ring:  rgba(26, 43, 74, 0.25);
@@ -130,6 +135,7 @@
     --ls-primary:     #4f75b8;
     --ls-primary-hover: #5d83c6;
     --ls-primary-active: #43669f;
+    --ls-brand-btn: var(--ls-yellow); --ls-brand-btn-hover: #fff7a8; --ls-brand-btn-active: #e6da00; --ls-on-brand-btn: #1a2b4a;
     --ls-link:        #8fb3f0;
     --ls-focus:       #8fb3f0;
     --ls-focus-ring:  rgba(143, 179, 240, 0.30);
@@ -166,6 +172,7 @@
   --ls-primary:     #4f75b8;
   --ls-primary-hover: #5d83c6;
   --ls-primary-active: #43669f;
+  --ls-brand-btn: var(--ls-yellow); --ls-brand-btn-hover: #fff7a8; --ls-brand-btn-active: #e6da00; --ls-on-brand-btn: #1a2b4a;
   --ls-link:        #8fb3f0;
   --ls-focus:       #8fb3f0;
   --ls-focus-ring:  rgba(143, 179, 240, 0.30);
@@ -461,6 +468,11 @@ p + p { margin-top: var(--ls-s3); }
 .ls-btn--ghost:hover { background: var(--ls-surface-3); }
 .ls-btn--danger { background: var(--ls-surface); color: var(--ls-danger); border-color: var(--ls-danger); }
 .ls-btn--danger:hover { background: var(--ls-danger-bg); }
+/* Markenknopf (2.1.4): hell Navy mit weißer Schrift, dunkel Logo-Gelb mit Navy-Schrift. Nur für die Projektaktion „Neues Projekt“;
+   er ist kein zweiter Primärknopf (Regel 2.4) und kein Zustand (Regel 2.3). */
+.ls-btn--brand { background: var(--ls-brand-btn); color: var(--ls-on-brand-btn); border-color: transparent; }
+.ls-btn--brand:hover { background: var(--ls-brand-btn-hover); }
+.ls-btn--brand:active { background: var(--ls-brand-btn-active); }
 .ls-btn--sm { min-height: 32px; padding: 0 var(--ls-s3); font-size: var(--ls-fs-sm); border-radius: var(--ls-r-sm); }
 .ls-btn--lg { min-height: 48px; padding: 0 var(--ls-s5); font-size: var(--ls-fs-lg); }
 .ls-btn--block { width: 100%; }
@@ -795,8 +807,8 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
   <!-- 2a · So geht’s -->
   <details class="ls-help ls-no-print">
     <summary>So geht’s</summary>
-    <div><ol><li>Projekt benennen (ohne Personendaten, z. B. „BV Muster“ oder Ort und Gewerk).</li><li>Raum benennen, Heizlast aus dem Heizlastbericht eintragen; Raumtemperatur, Norm-Außentemperatur und 50/40 °C sind vorbelegt.</li><li>Einbau festlegen: maximale Bauhöhe und Baulänge (leer = unbegrenzt), Hersteller, Bauform, Typen, Ausführung.</li><li>„Passende Heizkörper suchen“ wählen, Zeile antippen, bei Bedarf Konsole, „aus Lager“ oder „Bestand“ setzen, dann „+ Raum speichern“. Für mehrere Heizkörper je Raum „Mehrere Heizkörper“ wählen und Treffer zum Raum hinzufügen.</li><li>Ansicht „Nötige Vorlauftemperatur“ zeigt je Baugröße, welche VL die Heizlast deckt; „Erreichbare Raumtemperatur“, welche Temperatur sich mit der maximalen Fläche einstellt.</li><li>„Bericht drucken / PDF“ für die Kundenakte (Räume und Bestellübersicht), „GAEB (.X83) für HERO“ für das Angebot, „Projekt sichern (Datei)“ zum Weiterarbeiten.</li></ol>
-    <p class="ls-filehint ls-mt-2">iPad: Die Datei aus „Projekt sichern“ landet über das Teilen-Blatt in der Dateien-App. Zum Laden das Tool in Safari öffnen, nicht in der Vorschau (Quick Look). Der Lagerbestand (lager.json) lädt nur über die echte Adresse; ohne ihn rechnet das Tool ohne Abgleich weiter. Artikeldaten aus der DATANORM werden je Gerät einmal geladen und bleiben im Browser.</p></div>
+    <div><ol><li>Projekt benennen (ohne Personendaten, z. B. „BV Muster“ oder Ort und Gewerk).</li><li>Raum benennen, Heizlast aus dem Heizlastbericht eintragen; Postleitzahl setzt die Norm-Außentemperatur (Vorgabe −12,7 °C), Raumtemperatur und 50/40 °C sind vorbelegt.</li><li>Einbau festlegen: maximale Bauhöhe und Baulänge (leer = unbegrenzt), Hersteller, Bauform, Typen, Ausführung.</li><li>„Passende Heizkörper suchen“ wählen, Zeile antippen, bei Bedarf Konsole, „aus Lager“ oder „Bestand“ setzen, dann „+ Raum speichern“. Für mehrere Heizkörper je Raum „Mehrere Heizkörper“ wählen und Treffer zum Raum hinzufügen.</li><li>Ansicht „Nötige Vorlauftemperatur“ zeigt je Baugröße, welche VL die Heizlast deckt; „Erreichbare Raumtemperatur“, welche Temperatur sich mit der maximalen Fläche einstellt.</li><li>„Bericht drucken / PDF“ für die Kundenakte (Räume und Bestellübersicht), „Projekt sichern (Datei)“ zum Weiterarbeiten. Das Angebot entsteht in HERO nach der Bestellübersicht.</li></ol>
+    <p class="ls-filehint ls-mt-2">iPad: Die Datei aus „Projekt sichern“ landet über das Teilen-Blatt in der Dateien-App. Zum Laden das Tool in Safari öffnen, nicht in der Vorschau (Quick Look). Lagerbestand (lager.json) und PLZ-Tabelle (normaussentemperatur.json) laden nur über die echte Adresse; ohne sie rechnet das Tool ohne Abgleich und mit der Vorgabe −12,7 °C weiter. Ohne Server lässt sich der Lagerbestand mit „Lagerbestand laden (Datei)“ aus der Bestandsaufnahme einlesen; er bleibt im Browser, bis eine neue Datei geladen wird.</p></div>
   </details>
 
   <div class="ls-note ls-note--warn ls-no-print" id="hinweisVorschau" hidden>
@@ -811,27 +823,34 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
       <div class="ls-field">
         <label class="ls-label" for="projekt">Kunde / Projekt</label>
         <input class="ls-input" id="projekt" type="text" placeholder="BV Muster" autocomplete="off">
-        <div class="ls-hint">Keine Personendaten – Ort und Gewerk reichen. Steht im Kopf, im Bericht, im Dateinamen und in der GAEB-Datei.</div>
+        <div class="ls-hint">Keine Personendaten – Ort und Gewerk reichen. Steht im Kopf, im Bericht und im Dateinamen.</div>
       </div>
     </div>
     <div class="ls-toolbar ls-mt-4">
-      <button type="button" class="ls-btn ls-btn--secondary ls-btn--sm" id="btnNeu">Neues Projekt</button>
-      <span class="ls-toolbar__spacer"></span>
+      <button type="button" class="ls-btn ls-btn--brand ls-btn--sm" id="btnNeu" title="Löscht Kunde, Eingaben und alle gespeicherten Räume (mit Rückfrage)">Neues Projekt</button>
       <button type="button" class="ls-btn ls-btn--secondary ls-btn--sm" id="btnSichern">Projekt sichern (Datei)</button>
       <label class="ls-btn ls-btn--secondary ls-btn--sm" for="dateiLaden" id="dateiLadenLabel">Projekt laden (Datei)</label>
       <input type="file" id="dateiLaden" accept=".json,application/json" class="ls-sr-only">
-      <button type="button" class="ls-btn ls-btn--secondary ls-btn--sm" id="btnDrucken">Bericht drucken / PDF</button>
-      <button type="button" class="ls-btn ls-btn--secondary ls-btn--sm" id="btnGaeb">GAEB (.X83) für HERO</button>
-      <label class="ls-btn ls-btn--secondary ls-btn--sm" for="artikelDatei" id="artikelLabel" title="JSON aus dem DATANORM-Konverter; bleibt im Browser, nie im Repo">Artikeldaten laden</label>
-      <input type="file" id="artikelDatei" accept=".json,application/json" class="ls-sr-only">
     </div>
+    <details class="ls-details ls-mt-4">
+      <summary>Erweitert <span class="ls-muted">· Lagerbestand aus Datei</span></summary>
+      <div class="ls-toolbar ls-mt-2">
+        <label class="ls-btn ls-btn--secondary ls-btn--sm" for="lagerDatei" id="lagerDateiLabel" title="lager.json aus der Bestandsaufnahme">Lagerbestand laden (Datei)</label>
+        <input type="file" id="lagerDatei" accept=".json,application/json" class="ls-sr-only">
+      </div>
+      <div class="ls-hint ls-mt-2">Nur nötig, wenn das Tool ohne Server läuft; sonst lädt der Lagerbestand von selbst. Die Datei bleibt auf diesem Gerät, bis eine neue geladen wird.</div>
+    </details>
   </section>
 
   <!-- 3a · Gespeicherte Räume -->
   <section class="ls-card ls-no-print" aria-labelledby="h-raeume" id="raeumeCard" hidden>
     <div class="ls-card__head"><h2 id="h-raeume">Gespeicherte Räume</h2><span class="ls-badge" id="raeumeAnzahl">0</span></div>
     <div class="ls-items" id="raumListe"></div>
-    <div class="ls-hint ls-mt-2">Gleicher Raumname in gleicher Etage überschreibt den Eintrag. Strg/Cmd + Z macht Änderungen an der Liste rückgängig. „Bestand“ am Raum: Heizkörper bleibt, keine Bestellung, keine Konsolen.</div>
+    <div class="ls-toolbar ls-mt-4">
+      <button type="button" class="ls-btn ls-btn--secondary" id="btnDrucken">Bericht drucken / PDF</button>
+      <span class="ls-muted">Räume nach Etagen und Bestellübersicht für die Kundenakte</span>
+    </div>
+    <div class="ls-hint ls-mt-2">„Bearbeiten“ lädt den Raum zurück ins Formular; „+ Raum speichern“ überschreibt dann den Eintrag (gleicher Name in gleicher Etage), ein anderer Name legt einen neuen Raum an. „Duplizieren“ legt eine Kopie an. Strg/Cmd + Z macht Änderungen an der Liste rückgängig. „Bestand“ am Raum: Heizkörper bleibt, keine Bestellung, keine Konsolen.</div>
   </section>
 
   <!-- 4 · Eingaben -->
@@ -866,9 +885,15 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
           <div class="ls-error" id="raumTempErr" hidden></div>
         </div>
         <div class="ls-field">
+          <label class="ls-label" for="plz">Postleitzahl des Objekts</label>
+          <input class="ls-input ls-num" id="plz" type="text" inputmode="numeric" maxlength="5" placeholder="16515" autocomplete="off">
+          <div class="ls-hint" id="plzHint">Setzt die Norm-Außentemperatur nach DIN/TS 12831-1.</div>
+          <div class="ls-error" id="plzErr" hidden></div>
+        </div>
+        <div class="ls-field">
           <label class="ls-label" for="normAT">Norm-Außentemperatur</label>
           <div class="ls-unit"><input class="ls-input ls-num" id="normAT" type="text" inputmode="decimal" value="−12,7"><span>°C</span></div>
-          <div class="ls-hint">Region Oranienburg. Wirkt nur auf die erreichbare Raumtemperatur.</div>
+          <div class="ls-hint" id="normATHint">Vorgabe Region Oranienburg; von Hand überschreibbar. Wirkt nur auf die erreichbare Raumtemperatur.</div>
           <div class="ls-error" id="normATErr" hidden></div>
         </div>
         <div class="ls-field">
@@ -893,6 +918,7 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
           <div class="ls-hint">Andere Werte oben eintragen.</div>
         </div>
       </div>
+      <div class="ls-row ls-mt-2"><span class="ls-stand" id="normATStand">Norm-Außentemperaturen je PLZ · Tabelle wird geladen</span></div>
     </section>
 
     <!-- 4.2 Einbau und Heizkörper -->
@@ -964,12 +990,12 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
       </div>
 
       <details class="ls-details ls-mt-4" id="erweitert">
-        <summary>Erweitert <span class="ls-muted" id="erweitertKurz">· Reserve 0 %</span></summary>
+        <summary>Erweitert <span class="ls-muted" id="erweitertKurz">· Reserve 5 %</span></summary>
         <div class="ls-fields ls-mt-2">
           <div class="ls-field">
             <label class="ls-label" for="reserve">Sicherheitsreserve</label>
-            <div class="ls-unit"><input class="ls-input ls-num" id="reserve" type="text" inputmode="decimal" value="0"><span>%</span></div>
-            <div class="ls-hint">Kein Standard, Einzelfallentscheidung. Erhöht den Bedarf, nicht die angezeigte Deckung.</div>
+            <div class="ls-unit"><input class="ls-input ls-num" id="reserve" type="text" inputmode="decimal" value="5"><span>%</span></div>
+            <div class="ls-hint">Vorgabe 5 % (Fabian, 2026-11-09); 15 % ist kein Standard, Einzelfallentscheidung. Erhöht den Bedarf, nicht die angezeigte Deckung.</div>
             <div class="ls-error" id="reserveErr" hidden></div>
           </div>
           <div class="ls-field">
@@ -982,12 +1008,6 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
             <div class="ls-unit"><input class="ls-input ls-num" id="bautiefeBestand" type="text" inputmode="decimal" placeholder="leer"><span>mm</span></div>
             <div class="ls-hint">Guss nach DIN 4703: 2-Säuler 70 · 3-Säuler 110 · 4-Säuler 160 · 5-Säuler 220 · 6-Säuler 250 mm. Bevorzugt Bauformen mit ähnlicher Tiefe (Nische, Fensterbank).</div>
             <div class="ls-error" id="bautiefeBestandErr" hidden></div>
-          </div>
-          <div class="ls-field">
-            <label class="ls-label" for="montageMinuten">Montagezeit je Heizkörper (GAEB)</label>
-            <div class="ls-unit"><input class="ls-input ls-num" id="montageMinuten" type="text" inputmode="decimal" placeholder="leer"><span>min</span></div>
-            <div class="ls-hint">Leer lassen, wenn die Arbeitszeit in HERO ergänzt wird; dann entfällt die Position „Arbeitszeit Monteur“.</div>
-            <div class="ls-error" id="montageMinutenErr" hidden></div>
           </div>
         </div>
       </details>
@@ -1248,14 +1268,19 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
    DB(), dTlog, leistung, imLager, runFit (Filter, Lagerabgleich mit Begründungen, Sortierung),
    hkKorbAdd/-Menge/-Remove, korbSummeLeistung, korbNoetigeVL, korbErreichbareRaumtemp, runTemp, requiredVL,
    erreichbareRaumtemp, runRoom, erzeugeUntertempHinweis, speichereRaum (Raumobjekt), Artikelstamm,
-   GAEB (gaebXml, konsoleAddieren, gaebKonsolen), Bestellübersicht, Undo. Die Blöcke sind mit
+   konsoleAddieren (Konsolenregeln), Bestellübersicht, Undo. GAEB-Export, Artikelstamm und Montagezeit am 2026-11-09 entfernt (06, Fabian). Die Blöcke sind mit
    „— Rechenteil Altfassung —“ markiert; geändert ist darin nur die Verbindung zu den Feldern
    (ids laut Feldliste, alert() → LS.toast(), Zahlenformat im Kundenhinweis laut 06).
    Darstellung (Formular, Kennzahlen, Trefferliste, Auswahlkarte, Korb, Raumliste, Bericht) ist neu.
    Feldnamen alt → neu (FELD_MAPPING unten): kunde → projekt · raumname → raumName · raumtemp → raumTemp ·
    taussen → normAT · tv → vl · tr → rl · maxH → maxBH · maxL → maxBL · bestand → bestandTyp ·
-   gusstiefe/gusstiefeFrei → bautiefeBestand · gaebMinuten → montageMinuten.
-   Gewollte Standardwert-Änderungen (06, 2026-11-08): Reserve 0 % (alt 15), Norm-Außentemperatur −12,7 °C (alt −14).
+   gusstiefe/gusstiefeFrei → bautiefeBestand (gaebMinuten entfällt).
+   Gewollte Standardwert-Änderungen (06, 2026-11-08): Reserve 0 % (alt 15), Norm-Außentemperatur −12,7 °C (alt −14);
+   Reserve-Vorgabe seit 2026-11-09 5 % (06, Fabian). Referenzfälle setzen die Reserve ausdrücklich.
+   Erweiterung Schritt 10 (Fabian 2026-11-09, BACKLOG): „Bearbeiten“ lädt einen gespeicherten Raum zurück ins Formular,
+   „Duplizieren“ legt eine Kopie an. Ohne Rechenwirkung; Referenzfälle H1–H6 unverändert.
+   Erweiterung 2 (Fabian 2026-11-09): Postleitzahl setzt die Norm-Außentemperatur aus normaussentemperatur.json
+   (BWP-Klimakarte nach DIN/TS 12831-1, wie auslegung.html); nur Vorbelegung des Feldes, keine Rechenänderung.
    ============================================================ */
 var $ = function (id) { return document.getElementById(id); };
 var PROJEKT_KEY = 'heizkoerper-projekt';
@@ -1961,7 +1986,7 @@ function eingabenPruefen(){
   }
   pr('reserve', 0, 50, 0);
   ['maxBH','maxBL'].forEach(id=>{ const roh=$(id).value.trim(); let f=null; if(roh!==''){ const n=LS.zahl(roh); if(n==null||n<=0) f='Maß in mm eintragen oder leer lassen (= unbegrenzt).'; } LS.fehler(id,f); if(f&&!erstes) erstes=id; });
-  ['bautiefeBestand','montageMinuten'].forEach(id=>{ const roh=$(id).value.trim(); let f=null; if(roh!==''){ const n=LS.zahl(roh); if(n==null||n<0) f='Zahl eintragen oder leer lassen.'; } LS.fehler(id,f); if(f&&!erstes){ erstes=id; $('erweitert').open=true; } });
+  ['bautiefeBestand'].forEach(id=>{ const roh=$(id).value.trim(); let f=null; if(roh!==''){ const n=LS.zahl(roh); if(n==null||n<0) f='Zahl eintragen oder leer lassen.'; } LS.fehler(id,f); if(f&&!erstes){ erstes=id; $('erweitert').open=true; } });
   const typen = document.querySelectorAll('#typenFeld input:checked').length;
   const te = $('typenErr'); te.hidden = !!typen; te.textContent = typen ? '' : 'Mindestens einen Typ anhaken.';
   if(!typen && !erstes) erstes = 'typenFeld';
@@ -2012,8 +2037,8 @@ function herstellerWechsel(neu){
 function erweitertKurz(){
   const r = LS.lesen('reserve') || 0;
   const bt = $('bestandTyp'); const btTxt = bt.value ? bt.options[bt.selectedIndex].text.replace(/ \(.*\)$/,'') : 'kein Bestandstyp';
-  const tiefe = LS.lesen('bautiefeBestand'); const mm = LS.lesen('montageMinuten');
-  $('erweitertKurz').textContent = '· Reserve ' + LS.fmt(r, 0) + ' % · ' + btTxt + ' · ' + (tiefe ? 'Bautiefe ' + LS.fmt(tiefe,0) + ' mm' : 'keine Bautiefe') + ' · ' + (mm ? 'Montage ' + LS.fmt(mm,0) + ' min/HK' : 'Montagezeit leer');
+  const tiefe = LS.lesen('bautiefeBestand');
+  $('erweitertKurz').textContent = '· Reserve ' + LS.fmt(r, 0) + ' % · ' + btTxt + ' · ' + (tiefe ? 'Bautiefe ' + LS.fmt(tiefe,0) + ' mm' : 'keine Bautiefe');
 }
 
 /* ===================== — Rechenteil Altfassung — Ansicht ① Treffer, Lagerabgleich, Sortierung ===================== */
@@ -2797,7 +2822,7 @@ function saveState(){
 }
 function zustandMerken(){
   LS.speicher.schreiben(PROJEKT_KEY + '-zustand', {
-    hersteller: HERSTELLER, bauform: KERMI_BAUFORM, hkModus: HK_MODE, ansicht: currentMode,
+    hersteller: HERSTELLER, bauform: KERMI_BAUFORM, hkModus: HK_MODE, ansicht: currentMode, normATQuelle: normATQuelle,
     typenAb: [...document.querySelectorAll('#typenFeld input')].filter(c=>!c.checked).map(c=>c.value)
   });
 }
@@ -2948,129 +2973,10 @@ function raumSpeichernKlick(){
   AKTUELLE_ETAGE = $('etage').value;
   const vorher = JSON.stringify(PROJEKT.raeume);
   speichereRaum();
-  if(JSON.stringify(PROJEKT.raeume) !== vorher){ LS.toast('Gespeichert', 'ok'); }
+  if(JSON.stringify(PROJEKT.raeume) !== vorher){ BEARBEITET = null; renderRaumliste(); LS.toast('Gespeichert', 'ok'); }
 }
 
-/* ===================== — Rechenteil Altfassung — Artikelstamm (DATANORM, nur localStorage) ===================== */
-const ARTIKEL_KEY = 'lutzspring-artikelstamm';
-let ARTIKEL = null;          // {a:[[nr,ean,name],…], bn:{…}, dim:{…}}
-
-function artikelLaden(){
-  try{
-    const roh = localStorage.getItem(ARTIKEL_KEY);
-    if(roh){
-      const d = JSON.parse(roh);
-      ARTIKEL = (d && Array.isArray(d.a) && d.bn && d.dim) ? d : null;
-    }
-  }catch(e){ ARTIKEL = null; }
-  artikelStatus();
-}
-
-function artikelStatus(){
-  const el = document.getElementById('artikelLabel');
-  if(!el) return;
-  const n = ARTIKEL ? ARTIKEL.a.length : 0;
-  el.textContent = n ? `⤒ Artikeldaten: ${n.toLocaleString('de-DE')} Artikel` : '⤒ Artikeldaten laden';
-  el.title = n ? 'Zum Ersetzen erneut anklicken' : 'JSON mit Artikeldaten aus DATANORM laden';
-}
-
-function artikelImport(datei){
-  const leser = new FileReader();
-  leser.onload = function(){
-    try{
-      const d = JSON.parse(leser.result);
-      if(!d || !Array.isArray(d.a) || !d.bn || !d.dim) throw new Error('Format');
-      const n = d.a.length;
-      if(!n) throw new Error('leer');
-      localStorage.setItem(ARTIKEL_KEY, leser.result);
-      ARTIKEL = d;
-      artikelStatus();
-      LS.toast(`${n.toLocaleString('de-DE')} Artikel geladen. Der GAEB-Export ergänzt ab sofort Artikelnummer und EAN.`, 'ok', 4000);
-    }catch(e){
-      LS.toast('Die Datei konnte nicht gelesen werden. Erwartet wird die mit dem DATANORM-Konverter erzeugte JSON-Datei.', 'danger', 5000);
-    }
-  };
-  leser.readAsText(datei);
-}
-
-/* Nachschlagen: zuerst ueber die Masse (robust, unabhaengig vom
-   Nummernformat), ersatzweise ueber den Bestellschluessel. */
-function artikelFinden(h){
-  if(!ARTIKEL || !h) return null;
-  let i;
-  // 1. Massindex: Baureihe|Typ|Bauhoehe|Baulaenge[|li/re]
-  const serie = artikelSerie(h);
-  if(serie && h.typ != null && h.bh && h.bl){
-    let k = serie + '|' + parseInt(h.typ,10) + '|' + h.bh + '|' + h.bl;
-    if(ARTIKEL.dim[k] === undefined && (h.v === 'V')){
-      // Ventilausfuehrung: Seite anhaengen
-      const s = (h.anschluss === 'links') ? 'li' : 're';
-      if(ARTIKEL.dim[k + '|' + s] !== undefined) k = k + '|' + s;
-    }
-    i = ARTIKEL.dim[k];
-    if(i === undefined && h.v === 'V'){
-      i = ARTIKEL.dim[k + '|re'];
-      if(i === undefined) i = ARTIKEL.dim[k + '|li'];
-    }
-  }
-  // 2. Ersatzweise Bestellschluessel
-  if(i === undefined && h.bestellnr) i = ARTIKEL.bn[String(h.bestellnr).trim()];
-  if(i === undefined) return null;
-  const a = ARTIKEL.a[i];
-  return a ? {nr:a[0], ean:a[1], name:a[2]} : null;
-}
-
-/* Baureihenschluessel aus dem gespeicherten Modelltext ableiten. */
-function artikelSerie(h){
-  const m = String(h.modell||'');
-  if(/Verteo[- ]Profil/i.test(m)) return 'verteo-profil';
-  if(/Verteo[- ]Plan/i.test(m))   return 'verteo-plan';
-  if(/Profil-K/i.test(m)) return 'profil-k';
-  if(/Plan-K/i.test(m))   return 'plan-k';
-  if(/Profil-V/i.test(m)) return 'profil-v';
-  if(/Plan-V/i.test(m))   return 'plan-v';
-  return null;
-}
-
-function artikelStatus(){
-  const el = $('artikelLabel'); if(!el) return;
-  const n = ARTIKEL ? ARTIKEL.a.length : 0;
-  el.textContent = n ? `Artikeldaten: ${LS.fmt(n,0)} Artikel` : 'Artikeldaten laden';
-  el.title = n ? 'Geladen; zum Ersetzen erneut anklicken. Daten bleiben im Browser.' : 'JSON mit Artikeldaten aus dem DATANORM-Konverter laden (bleibt im Browser, nie im Repo)';
-}
-
-/* ===================== — Rechenteil Altfassung — GAEB-Export (DA XML 3.2, Phase 83) ===================== */
-function gaebEsc(t){
-  return String(t==null?'':t)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&apos;');
-}
-
-/* Artikelbezeichnung im Format des Grosshandels-Artikelstamms, z. B.
-   "KERMI X2 Profil-K Typ22 BH600x100x1200mm QN1999, weiß, 10 bar, m. Abdeckung"
-   Nur fuer Kermi therm-x2 belegt (dort gegen ein echtes Angebot geprueft);
-   sonst wird der Klartext des Tools verwendet. */
-function gaebBezeichnung(h){
-  const m = /therm-x2\s+([A-Za-zÄÖÜäöü]+-[KV])\s+Typ\s+(\d+)/.exec(h.modell||'');
-  if(m && h.qn && h.bt){
-    return `KERMI X2 ${m[1]} Typ${m[2]} BH${h.bh}x${h.bt}x${h.bl}mm QN${h.qn}, weiß, 10 bar, m. Abdeckung`;
-  }
-  return h.klartext || h.modell || 'Heizkörper';
-}
-
-/* ============================================================
-   KONSOLENREGELN — EINZIGE STELLE
-
-   Fruehere Fassung hatte diese Regeln doppelt: einmal im Druckbericht,
-   einmal im GAEB-Export. Beide Kopien waren logisch identisch, konnten
-   aber auseinanderdriften. Jetzt rechnen beide Wege hierueber.
-
-   Regeln:
-     therm-x2 Wand : Schnellmontageset je HK, 3. Konsole ab BL 1800 mm
-     Standkonsole  : 2 oder 3 je HK, dazu je Konsole eine Blende,
-                     bei Typ 11 Ventil zusaetzlich ein Ausgleichsstueck
-     Verteo        : Wandkonsolen-Set lang
-   ============================================================ */
+/* ===================== — Rechenteil Altfassung — Konsolenregeln (eine Stelle für Bericht) ===================== */
 function konsoleAddieren(ziel, k, menge){
   if(!k || !k.verfuegbar) return;
   function nimm(nr, bez, anz){
@@ -3089,208 +2995,6 @@ function konsoleAddieren(ziel, k, menge){
     nimm(k.setNr, 'Schnellmontageset WA 30 mm weiß (2 Konsolen)', menge);
     if(k.drei) nimm(k.dritteNr, '3. Konsole (Einzelkonsole, ab BL 1800 mm)', menge);
   }
-}
-
-/* Konsolen/Blenden ueber alle Raeume summieren (GAEB-Export). */
-function gaebKonsolen(raeume){
-  const kons = {};
-  const add = (k, menge) => konsoleAddieren(kons, k, menge);
-  raeume.forEach(r=>{
-    const arr = r.mehrfach ? r.hkliste : [{konsole:r.konsole, anzahl:1, istBestand:r.hk.istBestand}];
-    arr.forEach(h=>{
-      if(r.bestand) return;   // ganzer Raum bleibt Bestand -> nichts bestellen
-      // Ob ein Bestands-HK Konsolen bekommt, wurde beim Speichern entschieden:
-      // ohne Halterbedarf ist konsole = null und konsoleAddieren() tut nichts.
-      add(h.konsole !== undefined ? h.konsole : r.konsole, h.anzahl||1);
-    });
-  });
-  return Object.values(kons).sort((a,b)=>String(a.artNr).localeCompare(String(b.artNr)));
-}
-
-function gaebXml(){
-  const raeume = PROJEKT.raeume;
-  const jetzt = new Date();
-  const p2 = n => String(n).padStart(2,'0');
-  const datum = `${jetzt.getFullYear()}-${p2(jetzt.getMonth()+1)}-${p2(jetzt.getDate())}`;
-  const zeit  = `${p2(jetzt.getHours())}:${p2(jetzt.getMinutes())}:${p2(jetzt.getSeconds())}`;
-  const kunde = (PROJEKT.kunde||'').trim();
-  const projekt = kunde ? `Heizkörper-Austausch ${kunde}` : 'Heizkörper-Austausch';
-
-  let idn = 0;
-  const gid = () => `ID_${Math.floor(jetzt.getTime()/1000).toString(16)}_${String(++idn).padStart(3,'0')}`;
-
-  const x = [];
-  const item = (menge, einheit, kurz, langZeilen, rno, ind) => {
-    x.push(`${ind}<Item ID="${gid()}" RNoPart="${String(rno).padStart(3,'0')}">`);
-    x.push(`${ind}  <Qty>${menge}</Qty>`);
-    x.push(`${ind}  <QU>${gaebEsc(einheit)}</QU>`);
-    x.push(`${ind}  <Description>`);
-    x.push(`${ind}    <CompleteText>`);
-    x.push(`${ind}      <DetailTxt>`);
-    x.push(`${ind}        <Text>`);
-    langZeilen.forEach(z=>x.push(`${ind}          <p><span>${gaebEsc(z)}</span></p>`));
-    x.push(`${ind}        </Text>`);
-    x.push(`${ind}      </DetailTxt>`);
-    x.push(`${ind}      <OutlineText>`);
-    x.push(`${ind}        <TextOutlTxt><span>${gaebEsc(kurz)}</span></TextOutlTxt>`);
-    x.push(`${ind}      </OutlineText>`);
-    x.push(`${ind}    </CompleteText>`);
-    x.push(`${ind}  </Description>`);
-    x.push(`${ind}</Item>`);
-  };
-
-  x.push('<?xml version="1.0" encoding="UTF-8"?>');
-  x.push(`<GAEB xmlns="http://www.gaeb.de/GAEB_DA_XML/DA83/3.2">`);
-  x.push('  <GAEBInfo>');
-  x.push('    <Version>3.2</Version>');
-  x.push('    <VersDate>2013-10</VersDate>');
-  x.push(`    <Date>${datum}</Date>`);
-  x.push(`    <Time>${zeit}</Time>`);
-  x.push('    <ProgSystem>Lutz Spring GmbH – Heizkörper-Auslegung</ProgSystem>');
-  x.push('    <ProgName>heizkoerper.html</ProgName>');
-  x.push('  </GAEBInfo>');
-  x.push('  <PrjInfo>');
-  x.push(`    <NamePrj>${gaebEsc(projekt)}</NamePrj>`);
-  x.push(`    <LblPrj>${gaebEsc(kunde||'Heizkörper-Austausch')}</LblPrj>`);
-  x.push('    <Cur>EUR</Cur>');
-  x.push('    <CurLbl>Euro</CurLbl>');
-  x.push('  </PrjInfo>');
-  x.push('  <Award>');
-  x.push('    <DP>83</DP>');
-  x.push('    <AwardInfo>');
-  x.push('      <Cur>EUR</Cur>');
-  x.push('      <CurLbl>Euro</CurLbl>');
-  x.push('    </AwardInfo>');
-  x.push(`    <BoQ ID="${gid()}">`);
-  x.push('      <BoQInfo>');
-  x.push(`        <Name>${gaebEsc(projekt)}</Name>`);
-  x.push(`        <LblBoQ>${gaebEsc(kunde||'Heizkörper-Austausch')}</LblBoQ>`);
-  x.push(`        <Date>${datum}</Date>`);
-  x.push('      </BoQInfo>');
-  x.push('      <BoQBody>');
-
-  /* ---------- Pos. 1: Heizkoerper, Untergruppe je Raum ---------- */
-  x.push(`        <BoQCtgy ID="${gid()}" RNoPart="1">`);
-  x.push('          <LblTx>Heizkörper</LblTx>');
-  x.push('          <BoQBody>');
-  let rNr = 0;
-  raeume.forEach(r=>{
-    const arr = r.mehrfach ? r.hkliste : [{
-      modell:r.hk.modell, klartext:r.hk.klartext, bestellnr:r.hk.bestellnr,
-      bh:r.hk.bh, bl:r.hk.bl, bt:r.hk.bt, qn:r.hk.qn, anzahl:1,
-      leistung:r.hk.leistung, istBestand:r.hk.istBestand,
-      ausLager:r.hk.ausLager, lagerNotiz:r.hk.lagerNotiz
-    }];
-    const zuLiefern = arr.filter(h=>!(r.bestand || h.istBestand));
-    if(!zuLiefern.length) return;
-    rNr++;
-    x.push(`            <BoQCtgy ID="${gid()}" RNoPart="${rNr}">`);
-    x.push(`              <LblTx>${gaebEsc((r.etage?r.etage+' ':'')+r.name)}</LblTx>`);
-    x.push('              <BoQBody>');
-    x.push('                <Itemlist>');
-    zuLiefern.forEach((h,hi)=>{
-      const lang = [];
-      // Zeile 1 = Artikelbezeichnung im Format des Grosshandels-Artikelstamms.
-      // Muss ganz oben stehen: Hero zeigt den GAEB-Kurztext nicht an, sichtbar
-      // ist nur der Langtext — und damit wird im Artikelstamm gesucht.
-      // Wenn die Artikeldaten geladen sind, wird der ECHTE Name verwendet
-      // (die berechnete Bezeichnung stimmt nicht bei jeder Baureihe:
-      //  Typ 33 heisst "KERMI X2 Profil-K …", Typ 10 nur "KERMI Profil-K …").
-      const stamm = artikelFinden(h);
-      lang.push(stamm ? stamm.name : gaebBezeichnung(h));
-      if(stamm){
-        lang.push(`Artikelnummer Großhandel: ${stamm.nr}`);
-        lang.push(`EAN: ${stamm.ean}`);
-      }
-      if(h.klartext) lang.push(h.klartext);
-      // Kermi-Bestellschluessel, NICHT die Grosshandelsnummer. Wiedemanns
-      // DATANORM liefert das Feld "Hersteller-Nr." leer, danach laesst sich
-      // im Artikelstamm also nicht suchen — nur bei Kermi direkt bestellen.
-      if(h.bestellnr) lang.push(`Kermi-Bestellschlüssel: ${h.bestellnr}`);
-      if(h.qn) lang.push(`Normwärmeleistung 75/65/20: ${h.qn} W`);
-      const einzel = h.leistung || h.leistungGesamt;
-      if(einzel) lang.push(`Leistung bei ${r.tv}/${r.tr}/${r.tl} °C: ${einzel} W`);
-      lang.push(`Heizlast des Raumes: ${r.heizlast} W (mit Reserve ${r.bedarf} W)`);
-      if(h.ausLager) lang.push(`Aus Lagerbestand${h.lagerNotiz?': '+h.lagerNotiz:''}`);
-      lang.push('Liefern, montieren und betriebsfertig anschließen.');
-      if(r.notiz){ lang.push(''); lang.push(r.notiz); }   // Untertemperatur-Hinweis
-      item(h.anzahl||1, 'Stk', stamm ? stamm.name : gaebBezeichnung(h),
-           lang.filter(z=>z!==undefined), hi+1, '                  ');
-    });
-    x.push('                </Itemlist>');
-    x.push('              </BoQBody>');
-    x.push('            </BoQCtgy>');
-  });
-  x.push('          </BoQBody>');
-  x.push('        </BoQCtgy>');
-
-  /* ---------- Pos. 2: Installationsmaterial ---------- */
-  const kons = gaebKonsolen(raeume);
-  if(kons.length){
-    x.push(`        <BoQCtgy ID="${gid()}" RNoPart="2">`);
-    x.push('          <LblTx>Installationsmaterial</LblTx>');
-    x.push('          <BoQBody>');
-    x.push('            <Itemlist>');
-    kons.forEach((k,i)=>{
-      item(k.anzahl, 'Stk', `${k.bez} (${k.artNr})`,
-           [k.bez, `Artikelnummer: ${k.artNr}`, 'Menge über alle Räume summiert.'],
-           i+1, '              ');
-    });
-    x.push('            </Itemlist>');
-    x.push('          </BoQBody>');
-    x.push('        </BoQCtgy>');
-  }
-
-  /* ---------- Pos. 3: Arbeits- und Serviceleistungen ---------- */
-  const minJeHk = LS.zahl((document.getElementById('montageMinuten')||{}).value);
-  const hkAnzahl = raeume.reduce((s,r)=>{
-    const arr = r.mehrfach ? r.hkliste : [{anzahl:1, istBestand:r.hk.istBestand}];
-    return s + arr.reduce((t,h)=>t + ((r.bestand||h.istBestand)?0:(h.anzahl||1)), 0);
-  }, 0);
-  x.push(`        <BoQCtgy ID="${gid()}" RNoPart="3">`);
-  x.push('          <LblTx>Arbeits- und Serviceleistungen</LblTx>');
-  x.push('          <BoQBody>');
-  x.push('            <Itemlist>');
-  let aNr = 0;
-  item(1, 'psch', 'Entsorgungspauschale Heizkörper (Bedarfsposition)',
-       ['Demontage und fachgerechte Entsorgung der Altheizkörper',
-        'einschließlich Transport und Entsorgungsnachweis.',
-        'BEDARFSPOSITION – wird nur bei Beauftragung berechnet.'],
-       ++aNr, '              ');
-  item(1, 'psch', 'Auftragspauschale',
-       ['Für Einsatzplanung, Koordination sowie interne Vor- und Nachbereitung.'],
-       ++aNr, '              ');
-  if(isFinite(minJeHk) && minJeHk > 0 && hkAnzahl > 0){
-    item(Math.round(minJeHk*hkAnzahl), 'Min', 'Arbeitszeit Monteur',
-         ['Demontage der Altheizkörper, Montage der neuen Heizflächen,',
-          'Anschluss, Befüllen, Entlüften und Funktionsprüfung.',
-          `Ansatz: ${minJeHk} Min. je Heizkörper × ${hkAnzahl} Heizkörper.`],
-         ++aNr, '              ');
-  }
-  x.push('            </Itemlist>');
-  x.push('          </BoQBody>');
-  x.push('        </BoQCtgy>');
-
-  x.push('      </BoQBody>');
-  x.push('    </BoQ>');
-  x.push('  </Award>');
-  x.push('</GAEB>');
-  return x.join('\n');
-}
-
-function gaebHerunterladen(){
-  if(!PROJEKT.raeume.length){ LS.toast('Noch kein Raum gespeichert. Erst Räume anlegen („+ Raum speichern“).', 'danger', 4000); return; }
-  const xml = gaebXml();
-  if(new DOMParser().parseFromString(xml,'application/xml').getElementsByTagName('parsererror').length){
-    LS.toast('Die GAEB-Datei konnte nicht erzeugt werden (XML-Fehler).', 'danger', 5000); return;
-  }
-  const blob = new Blob([xml], {type:'application/xml'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = LS.dateiname('heizkoerper', PROJEKT.kunde, 'X83');
-  document.body.appendChild(a); a.click();
-  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-  LS.toast('GAEB-Datei erstellt', 'ok');
 }
 
 /* ===================== — Rechenteil Altfassung — Raum löschen ===================== */
@@ -3324,7 +3028,7 @@ function renderRaumliste(){
       info = `${esc(r.hk.modell)} · ${r.hk.bh} × ${r.hk.bl} mm · ${f0(r.hk.leistung)} W bei ${tempTxt(r.tv)}/${tempTxt(r.tr)} °C · Heizlast ${f0(r.heizlast)} W · ${r.hk.deckung} %`;
       nr = r.hk.istBestand ? 'bleibt (Bestand)' : `<code>${esc(r.hk.bestellnr)}</code>`;
     }
-    return `<div class="ls-item">
+    return `<div class="ls-item${BEARBEITET===idx?' is-active':''}">
       <span class="ls-item__no">${idx+1}</span>
       <div class="ls-item__main">
         <b>${r.etage?esc(r.etage)+' · ':''}${esc(r.name)}${badges}</b>
@@ -3335,11 +3039,13 @@ function renderRaumliste(){
           <input type="text" class="ls-input ls-grow" data-notiz="${idx}" placeholder="Notiz zum Raum (z. B. Anschluss unten links, Sonderfarbe …)" value="${esc(r.notiz||'')}" aria-label="Notiz zu ${esc(r.name)}">
         </div>
       </div>
-      <div class="ls-item__actions"><button type="button" class="ls-btn ls-btn--ghost ls-btn--danger" aria-label="Raum löschen" title="Löschen" data-del="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div>
+      <div class="ls-item__actions"><button type="button" class="ls-btn ls-btn--ghost" aria-label="Raum bearbeiten" title="Bearbeiten" data-edit="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M12.5 7.5l4 4"/></svg></button><button type="button" class="ls-btn ls-btn--ghost" aria-label="Raum duplizieren" title="Duplizieren" data-dup="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg></button><button type="button" class="ls-btn ls-btn--ghost ls-btn--danger" aria-label="Raum löschen" title="Löschen" data-del="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div>
     </div>`;
   }).join('');
+  el.querySelectorAll('button[data-edit]').forEach(b=>b.addEventListener('click',()=>raumBearbeiten(+b.dataset.edit)));
+  el.querySelectorAll('button[data-dup]').forEach(b=>b.addEventListener('click',()=>raumDuplizieren(+b.dataset.dup)));
   el.querySelectorAll('button[data-del]').forEach(b=>{
-    b.addEventListener('click',()=>{ const i=+b.dataset.del; const r=PROJEKT.raeume[i]; LS.rueckfrage(b, `Raum „${r?r.name:''}“ löschen?`, 'Löschen', ()=>{ loescheRaum(i); LS.toast('Raum gelöscht', 'ok'); }); });
+    b.addEventListener('click',()=>{ const i=+b.dataset.del; const r=PROJEKT.raeume[i]; LS.rueckfrage(b, `Raum „${r?r.name:''}“ löschen?`, 'Löschen', ()=>{ BEARBEITET=null; loescheRaum(i); LS.toast('Raum gelöscht', 'ok'); }); });
   });
   el.querySelectorAll('input[data-notiz]').forEach(inp=>{
     inp.addEventListener('input',()=>{ const i=+inp.dataset.notiz; if(PROJEKT.raeume[i]){ PROJEKT.raeume[i].notiz=inp.value; saveState(); } });
@@ -3347,6 +3053,76 @@ function renderRaumliste(){
   el.querySelectorAll('input[data-bestand]').forEach(cb=>{
     cb.addEventListener('change',()=>{ const i=+cb.dataset.bestand; if(PROJEKT.raeume[i]){ pushUndo(); PROJEKT.raeume[i].bestand=cb.checked; saveState(); renderRaumliste(); } });
   });
+}
+
+/* ---------- Erweiterung Schritt 10: Raum bearbeiten / duplizieren (ohne Rechenwirkung) ---------- */
+let BEARBEITET = null; // Index des Raums, der gerade im Formular liegt (Markierung in der Liste)
+function herstellerAusRaum(r){
+  const h = r.mehrfach ? (r.hkliste[0]&&r.hkliste[0].hersteller) : (r.hk&&r.hk.hersteller);
+  return h || 'kermi';
+}
+function bauformAusRaum(r){ return /Plan/.test(String(r.hersteller||'')) ? 'plan' : 'profil'; }
+function feldSetzen(id, text){ const el=$(id); if(!el) return; el.value = text; el.dispatchEvent(new Event('input',{bubbles:true})); }
+function raumBearbeiten(idx){
+  const r = PROJEKT.raeume[idx]; if(!r) return;
+  BEARBEITET = idx;
+  // Hersteller und Bauform zuerst (buildTypeUI baut Typen und Bestandstyp neu)
+  const h = herstellerAusRaum(r), bf = bauformAusRaum(r);
+  const hr=document.querySelector(`input[name=hersteller][value=${h}]`); if(hr) hr.checked=true;
+  const br=document.querySelector(`input[name=bauform][value=${bf}]`); if(br) br.checked=true;
+  HERSTELLER = h; KERMI_BAUFORM = bf; buildTypeUI();
+  // Raum- und Bedarfsfelder aus dem Raumobjekt
+  feldSetzen('raumName', r.name||''); $('etage').value = r.etage||'';
+  feldSetzen('heizlast', f0(r.heizlast)); feldSetzen('reserve', f0(r.reserve||0));
+  feldSetzen('raumTemp', tempTxt(r.tl)); feldSetzen('normAT', f1(r.ta)); feldSetzen('vl', tempTxt(r.tv)); feldSetzen('rl', tempTxt(r.tr));
+  if(r.maxH!=null) feldSetzen('maxBH', r.maxH>=FLAECHE_UNBEGRENZT ? '' : f0(r.maxH));
+  if(r.maxL!=null) feldSetzen('maxBL', r.maxL>=FLAECHE_UNBEGRENZT ? '' : f0(r.maxL));
+  // Ausführung und Anschlussseite aus den gespeicherten Heizkörpern
+  const hks = r.mehrfach ? r.hkliste : [r.hk];
+  const vs = [...new Set(hks.map(x=>x.v||''))];
+  if(vs.length===1 && vs[0]){ const ar=document.querySelector(`input[name=ausfuehrung][value=${vs[0]==='V'?'FTV':'FK0'}]`); if(ar) ar.checked=true; }
+  else if(vs.length>1){ $('ausfBeide').checked=true; }
+  const seite = hks.map(x=>x.anschluss||'').find(Boolean); if(seite){ const sr=document.querySelector(`input[name=anschluss][value=${seite}]`); if(sr) sr.checked=true; }
+  aktualisiereAnschlussGruppe();
+  document.querySelectorAll('#typenFeld input').forEach(c=>c.checked=true);
+  schnellwahlSync(); erweitertKurz();
+  // Modus, Ansicht, rechnen
+  currentMode = 'fit'; ansichtSync();
+  HK_MODE = r.mehrfach ? 'multi' : 'single';
+  const mr=document.querySelector(`input[name=hkModus][value=${HK_MODE}]`); if(mr) mr.checked=true;
+  $('hkModusHint').textContent = HK_MODE==='multi' ? 'Mehrere Heizkörper sammeln: Treffer antippen → „+ zum Raum hinzufügen“. Die Summe muss die Heizlast decken.' : 'Standard: ein Heizkörper deckt die Heizlast.';
+  HK_KORB = [];
+  run();
+  if(!GERECHNET){ BEARBEITET=null; renderRaumliste(); return; }
+  const i = getInputs(); const db = DB();
+  if(r.mehrfach){
+    HK_KORB = r.hkliste.map(x=>({ typ:x.typ, bh:x.bh, bl:x.bl, tiefe:x.bt, v:x.v||'', w:x.leistung, anzahl:x.anzahl||1, hersteller:x.hersteller, dbName:r.hersteller,
+      modell:x.modell, klartext:x.klartext, bestellnr:x.bestellnr, konsole:x.konsole||null, istBestand:!!x.istBestand, ausLager:!!x.ausLager, anschluss:x.anschluss||'', lagerNotiz:x.lagerNotiz||'' }));
+    renderHkKorb();
+  } else {
+    const x = r.hk;
+    const w = leistung(x.typ, x.bh, x.bl, i.tv, i.tr, i.tl);
+    const lagerPos = imLager(HERSTELLER, x.typ, x.bh, x.bl, x.v||'', x.anschluss||i.anschluss);
+    const bez = db.bezeichnung(x.typ, x.bh, x.bl, x.v||'', x.anschluss||i.anschluss);
+    AKTUELLE_AUSWAHL = { r:{typ:x.typ, bh:x.bh, bl:x.bl, v:x.v||'', w, cover: w!=null&&i.heizlast>0 ? w/i.heizlast : null, tiefe:x.bt, lager:lagerPos||null}, bez, hersteller:HERSTELLER, dbName:db.name,
+      lager:lagerPos||null, ausLager: !!(lagerPos && x.ausLager), istBestand: !!x.istBestand, konsolenArt: (r.konsole&&r.konsole.art==='stand') ? 'stand' : 'wand', bestandKonsole: !!(x.istBestand && r.konsole), anschluss: x.v==='V' ? (x.anschluss||i.anschluss) : '' };
+    auswahlRendern();
+    const idxZeile = LETZTE_FIT_LISTE.findIndex(z=>String(z.typ)===String(x.typ)&&z.bh===x.bh&&z.bl===x.bl&&(z.v||'')===(x.v||''));
+    document.querySelectorAll('#treffer tr.is-clickable').forEach(tr=>tr.classList.toggle('is-selected', +tr.dataset.idx===idxZeile));
+    if(idxZeile<0) LS.toast('Gespeicherter Heizkörper steht nicht in der aktuellen Trefferliste; die Auswahl unten zeigt ihn trotzdem.', 'danger', 4500);
+  }
+  renderRaumliste();
+  LS.toast(`Raum „${r.name}“ zum Bearbeiten geladen`, 'ok');
+  LS.zumErgebnis('h-raum'); $('raumName').focus({preventScroll:true});
+}
+function raumDuplizieren(idx){
+  const r = PROJEKT.raeume[idx]; if(!r) return;
+  pushUndo();
+  const kopie = JSON.parse(JSON.stringify(r)); kopie.name = r.name + ' (Kopie)'; kopie.ts = Date.now();
+  PROJEKT.raeume.splice(idx+1, 0, kopie);
+  if(BEARBEITET!=null && BEARBEITET>idx) BEARBEITET++;
+  saveState(); renderRaumliste();
+  LS.toast(`Raum „${kopie.name}“ angelegt`, 'ok');
 }
 
 /* ---------- Bericht (Druck) nach vorlagen/bericht-vorlage.html ---------- */
@@ -3442,7 +3218,7 @@ function berichtBauen(){
       <div><span>Kunde / Projekt</span><b>${esc(kunde)}</b></div>
       <div><span>Datum</span><b>${LS.datum()}</b></div>
       <div><span>Grundlage</span><b>Heizlast je Raum laut Heizlastbericht · Auslegung nach EN 442${stand}</b></div>
-      <div><span>Norm-Außentemperatur</span><b>${[...new Set(PROJEKT.raeume.map(r=>f1(r.ta)))].join(' / ')} °C</b></div>
+      <div><span>Norm-Außentemperatur</span><b>${[...new Set(PROJEKT.raeume.map(r=>f1(r.ta)))].join(' / ')} °C${$('plz').value.trim() && normATQuelle && normATQuelle!=='von Hand' ? ' (PLZ '+esc($('plz').value.trim())+', DIN/TS 12831-1)' : ''}</b></div>
     </div></section>`;
   // Räume nach Etagen gruppieren (feste Reihenfolge; "ohne Etage" ans Ende)
   const ETAGEN_ORDER = ['KG','EG','1. OG','2. OG','3. OG','DG'];
@@ -3509,7 +3285,7 @@ window.addEventListener('afterprint', function(){ document.title = TITEL_VORHER;
 var FELD_MAPPING = { kunde: 'projekt' };
 function projektSichern(){
   projektAnzeigen();
-  LS.datei.sichern(LS.dateiname('heizkoerper', PROJEKT.kunde), { version: 2, tool: 'heizkoerper', exportiert: new Date().toISOString(), projekt: PROJEKT.kunde, raeume: PROJEKT.raeume });
+  LS.datei.sichern(LS.dateiname('heizkoerper', PROJEKT.kunde), { version: 2, tool: 'heizkoerper', exportiert: new Date().toISOString(), projekt: PROJEKT.kunde, plz: $('plz').value.trim(), raeume: PROJEKT.raeume });
   LS.toast('Projektdatei erstellt', 'ok');
 }
 function projektUebernehmen(daten){
@@ -3517,6 +3293,7 @@ function projektUebernehmen(daten){
   PROJEKT.raeume = daten.raeume;
   PROJEKT.kunde = daten.projekt || '';
   $('projekt').value = PROJEKT.kunde; projektAnzeigen();
+  if(daten.plz!=null){ $('plz').value = String(daten.plz); $('plz').dispatchEvent(new Event('input',{bubbles:true})); }
   UNDO_STACK = [];
   saveState(); renderRaumliste();
   LS.toast(`Projekt geladen: ${daten.raeume.length} ${daten.raeume.length===1?'Raum':'Räume'}`, 'ok');
@@ -3538,13 +3315,13 @@ function felderZuruecksetzen(){
   AKTUELLE_AUSWAHL=null; LETZTE_FIT_LISTE=[]; GERECHNET=false; currentMode='fit'; ansichtSync();
   $('ergebnisSub').textContent='noch nicht gerechnet'; $('kpis').innerHTML=''; $('hinweise').innerHTML=''; $('auswahl').innerHTML='';
   $('treffer').innerHTML = `<div class="ls-empty"><b>Noch kein Ergebnis</b>Raum benennen, Heizlast eintragen und „Passende Heizkörper suchen“ wählen.</div>`;
-  $('rechenwegText').innerHTML=''; erweitertKurz(); zustandMerken();
+  $('rechenwegText').innerHTML=''; normATQuelle=''; LS.fehler('plz', null); $('plzHint').textContent='Setzt die Norm-Außentemperatur nach DIN/TS 12831-1.'; $('normATHint').textContent='Vorgabe Region Oranienburg; von Hand überschreibbar. Wirkt nur auf die erreichbare Raumtemperatur.'; erweitertKurz(); zustandMerken();
 }
 $('btnReset').addEventListener('click', function(){ felderZuruecksetzen(); LS.toast('Zurückgesetzt', 'ok'); });
 $('btnNeu').addEventListener('click', function(){
   const b=this; const anzahl=PROJEKT.raeume.length;
   LS.rueckfrage(b, anzahl>0 ? `Neues Projekt starten? Kunde und alle ${anzahl} gespeicherten Räume werden gelöscht.` : 'Neues Projekt starten? Alle Eingaben werden zurückgesetzt.', 'Neues Projekt', function(){
-    PROJEKT={kunde:'', raeume:[]}; UNDO_STACK=[];
+    PROJEKT={kunde:'', raeume:[]}; UNDO_STACK=[]; BEARBEITET=null;
     $('projekt').value=''; projektAnzeigen();
     ['-raeume','-projekt','-zustand','-felder'].forEach(k=>LS.speicher.loeschen(PROJEKT_KEY + k));
     felderZuruecksetzen(); renderRaumliste(); berichtBauen();
@@ -3572,31 +3349,69 @@ document.querySelectorAll('input[name=anschluss]').forEach(r=>r.addEventListener
 document.querySelectorAll('input[name=hkModus]').forEach(r=>r.addEventListener('change',()=>{ setHkMode(r.value); zustandMerken(); }));
 $('typenFeld').addEventListener('change',()=>{ zustandMerken(); if(GERECHNET) run(); });
 $('bestandTyp').addEventListener('change',()=>{ erweitertKurz(); if(GERECHNET) run(); });
-['reserve','bautiefeBestand','montageMinuten'].forEach(id=>$(id).addEventListener('input', erweitertKurz));
+['reserve','bautiefeBestand'].forEach(id=>$(id).addEventListener('input', erweitertKurz));
 $('formEingaben').addEventListener('submit', function(ev){ ev.preventDefault(); run(); if(GERECHNET) LS.zumErgebnis('ergebnis'); });
 $('btnRaumSpeichern').addEventListener('click', raumSpeichernKlick);
 $('btnDrucken').addEventListener('click', druckeBericht);
-$('btnGaeb').addEventListener('click', gaebHerunterladen);
 $('btnSichern').addEventListener('click', projektSichern);
-$('artikelDatei').addEventListener('change', function(){ if(this.files && this.files[0]) artikelImport(this.files[0]); this.value=''; });
 $('projekt').addEventListener('input', function(){ projektAnzeigen(); LS.speicher.schreiben(PROJEKT_KEY + '-projekt', PROJEKT.kunde); berichtBauen(); });
 $('raumName').addEventListener('input', function(){ LS.fehler('raumName', null); });
 
-/* ---------- Lagerbestand (lager.json, nur über echte Adresse) ---------- */
-function ladeLager(){
-  LS.datei.extern('lager.json', function(data){
-    LAGER = Array.isArray(data.bestand) ? data.bestand : [];
-    LAGER_STAND = data.stand || null;
-    LAGER_GELADEN = true;
-    const n=LAGER.reduce((s,p)=>s+(Number(p.stueck)||0),0);
-    $('statusText').textContent = `Lagerbestand geladen: ${LAGER.length} Positionen (${n} Stück)${LAGER_STAND?' · Stand '+LAGER_STAND:''}`;
-    $('status').hidden = false;
-    if(GERECHNET) run(); // Ergebnis mit Lager-Info neu rendern
-    berichtBauen();
+/* ---------- Erweiterung 2: Postleitzahl → Norm-Außentemperatur (normaussentemperatur.json, wie auslegung.html) ---------- */
+let normTabelle = null;      /* { stand, anzahl, werte: { PLZ: °C } } */
+let normATQuelle = '';       /* '' | 'aus PLZ 16515, DIN/TS 12831-1' | 'von Hand' */
+function plzAnwenden(){
+  const plz = $('plz').value.trim();
+  if(!plz){ LS.fehler('plz', null); $('plzHint').textContent = 'Setzt die Norm-Außentemperatur nach DIN/TS 12831-1.'; return; }
+  if(!/^\d{5}$/.test(plz)){ LS.fehler('plz', 'Postleitzahl mit 5 Ziffern eintragen, z. B. 16515.'); return; }
+  LS.fehler('plz', null);
+  if(!normTabelle){ $('plzHint').textContent = 'PLZ-Tabelle nicht geladen (nur über die echte Adresse). Norm-Außentemperatur von Hand eintragen.'; return; }
+  const t = normTabelle.werte[plz];
+  if(t == null){ $('plzHint').textContent = 'PLZ ' + plz + ' nicht in der Tabelle (z. B. Borkum, Helgoland). Vorgabe −12,7 °C bleibt; von Hand eintragen.'; normATQuelle = ''; zustandMerken(); return; }
+  $('normAT').value = LS.fmt(t, 1); LS.fehler('normAT', null); normATQuelle = 'aus PLZ ' + plz + ', DIN/TS 12831-1';
+  $('plzHint').textContent = 'Norm-Außentemperatur ' + LS.fmt(t, 1) + ' °C nach DIN/TS 12831-1 eingesetzt.';
+  $('normATHint').textContent = 'Aus PLZ ' + plz + ' (DIN/TS 12831-1, BWP-Klimakarte); von Hand überschreibbar. Wirkt nur auf die erreichbare Raumtemperatur.';
+  $('normAT').dispatchEvent(new Event('input', {bubbles:true}));
+  zustandMerken();
+  if(GERECHNET && currentMode==='room') run();
+}
+function ladeNormTabelle(){
+  LS.datei.extern('normaussentemperatur.json', function(d){
+    normTabelle = d;
+    $('normATStand').textContent = 'Norm-Außentemperaturen Stand ' + (d.stand || '–') + ' · DIN/TS 12831-1 · prüfen';
+    if($('plz').value.trim() && normATQuelle !== 'von Hand') plzAnwenden();
   }, function(){
-    LAGER_GELADEN = false; $('status').hidden = true; // Tool rechnet ohne Abgleich weiter
+    $('normATStand').textContent = 'PLZ-Tabelle nicht geladen (nur über die echte Adresse) · Vorgabe −12,7 °C';
   });
 }
+$('plz').addEventListener('input', plzAnwenden);
+$('normAT').addEventListener('input', function(ev){ if(ev.isTrusted){ normATQuelle = 'von Hand'; $('normATHint').textContent = 'Von Hand gesetzt. PLZ neu eintragen, um den Normwert zu übernehmen.'; zustandMerken(); } });
+
+/* ---------- Lagerbestand (lager.json, nur über echte Adresse) ---------- */
+function lagerUebernehmen(data, quelle){
+  LAGER = Array.isArray(data.bestand) ? data.bestand : [];
+  LAGER_STAND = data.stand || null;
+  LAGER_GELADEN = true;
+  const n=LAGER.reduce((s,p)=>s+(Number(p.stueck)||0),0);
+  $('statusText').textContent = `Lagerbestand ${quelle==='datei'?'aus Datei ':''}geladen: ${LAGER.length} Positionen (${n} Stück)${LAGER_STAND?' · Stand '+LAGER_STAND:''}`;
+  $('status').hidden = false;
+  if(GERECHNET) run(); // Ergebnis mit Lager-Info neu rendern
+  berichtBauen();
+}
+function ladeLager(){
+  LS.datei.extern('lager.json', function(data){ lagerUebernehmen(data, 'adresse'); }, function(){
+    // Keine echte Adresse: zuletzt per Datei geladener Lagerbestand aus dem Browser-Speicher, sonst ohne Abgleich
+    const g = LS.speicher.lesen(PROJEKT_KEY + '-lager', null);
+    if(g && Array.isArray(g.bestand)) lagerUebernehmen(g, 'datei'); else { LAGER_GELADEN = false; $('status').hidden = true; }
+  });
+}
+/* Lagerbestand aus Datei (Format wie lager.json aus der Bestandsaufnahme), z. B. ohne Server; bleibt im Browser (Fabian, 2026-11-09) */
+LS.datei.laden($('lagerDatei'), function(data){
+  if(!data || !Array.isArray(data.bestand)){ LS.toast('Keine Lagerdatei (Feld „bestand“ fehlt). Erwartet wird lager.json aus der Bestandsaufnahme.', 'danger', 5000); return; }
+  LS.speicher.schreiben(PROJEKT_KEY + '-lager', { stand: data.stand || null, bestand: data.bestand });
+  lagerUebernehmen(data, 'datei');
+  LS.toast(`Lagerbestand geladen: ${data.bestand.length} Positionen`, 'ok');
+}, function(text){ LS.toast(text, 'danger', 5000); });
 
 /* ---------- iOS-Schnellvorschau erkennen (localStorage blockiert) ---------- */
 (function checkVorschau(){
@@ -3628,7 +3443,8 @@ altenSpeicherUebernehmen();
 projektAnzeigen();
 (function zustandLaden(){
   const z = LS.speicher.lesen(PROJEKT_KEY + '-zustand', null);
-  if(z){ if(z.hersteller) HERSTELLER=z.hersteller; if(z.bauform) KERMI_BAUFORM=z.bauform; if(z.hkModus) HK_MODE=z.hkModus; if(z.ansicht) currentMode=z.ansicht; }
+  if(z){ if(z.hersteller) HERSTELLER=z.hersteller; if(z.bauform) KERMI_BAUFORM=z.bauform; if(z.hkModus) HK_MODE=z.hkModus; if(z.ansicht) currentMode=z.ansicht; if(z.normATQuelle) normATQuelle=z.normATQuelle; }
+  if(normATQuelle==='von Hand') $('normATHint').textContent = 'Von Hand gesetzt. PLZ neu eintragen, um den Normwert zu übernehmen.';
   const hr=document.querySelector(`input[name=hersteller][value=${HERSTELLER}]`); if(hr) hr.checked=true;
   const br=document.querySelector(`input[name=bauform][value=${KERMI_BAUFORM}]`); if(br) br.checked=true;
   buildTypeUI();
@@ -3636,10 +3452,10 @@ projektAnzeigen();
   const bestandGespeichert = (LS.speicher.lesen(PROJEKT_KEY + '-felder', {})||{}).bestandTyp; if(bestandGespeichert && [...$('bestandTyp').options].some(o=>o.value===bestandGespeichert)) $('bestandTyp').value=bestandGespeichert;
   setHkMode(HK_MODE); ansichtSync(); schnellwahlSync(); erweitertKurz();
 })();
-artikelLaden();
 renderRaumliste();
 berichtBauen();
 ladeLager();
+ladeNormTabelle();
 
 </script>
 </body>

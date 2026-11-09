@@ -192,7 +192,12 @@ gegen ein XSD geprüft, und ein unbekanntes Element lässt den Import
 scheitern. Vor dem Download prüft der Code selbst per `DOMParser`, ob das
 XML wohlgeformt ist.
 
-`heizkoerper.html` hat denselben Export, aber in der Gliederung des
+**Stand 2026-11-09 (06):** Der GAEB-Export, die Artikeldaten und die Montagezeit wurden aus der
+Neufassung von `heizkoerper.html` entfernt; das Angebot entsteht in HERO nach der Bestellübersicht
+des Berichts. Die folgende Beschreibung gilt für die Altfassung (`alt/heizkoerper_2026-11-08.html`)
+und bleibt als Vorlage für `bad-angebot.html` stehen.
+
+`heizkoerper.html` (Altfassung) hatte denselben Export, aber in der Gliederung des
 regulären Angebots (geprüft gegen ANG-255):
 
     Pos. 1  Heizkörper             -> Untergruppe je Raum

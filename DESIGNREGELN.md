@@ -1,6 +1,6 @@
 # Designregeln für die internen Werkzeuge der Lutz Spring GmbH
 
-Version 2.1.2 · Stand 2026-10-25 · gilt für alle bestehenden und künftigen HTML-Tools im Repo
+Version 2.1.4 · Stand 2026-11-09 · gilt für alle bestehenden und künftigen HTML-Tools im Repo
 Zugehörige Dateien: `assets/css/design.css` (Stil), `assets/js/ls.js` (gemeinsames Verhalten), `assets/icons/` (Symbole), `assets/logo/` (Logo), `styleguide.html` (lebende Referenz), `vorlagen/` (tool-vorlage, bericht-vorlage, index-vorlage, feldliste-vorlage), `UMBAU-ABLAUF.md` (Schritte je Tool), `CLAUDE.md` (Anweisungen für die KI im Repo), `CHANGELOG.md`
 Kennzeichnung wie im Firmengehirn: [BESTÄTIGT] = von Fabian/GF entschieden · [VORSCHLAG] = von Claude vorgeschlagen, noch nicht bestätigt · [BELEGT] = rechnerisch oder am Datenblatt geprüft
 
@@ -55,7 +55,7 @@ Regeln:
 2. Zustand wird **doppelt** codiert: Farbe **und** Text/Symbol („115 % gedeckt“, nicht nur grün). Grund: Schwarzweißdruck, Farbsehschwäche.
 3. Gelb ist Marke, nicht Zustand. Warnung ist Orange. Beides nie nebeneinander als Bedeutungsträger.
 6. **Logo:** Variante B (Wortmarke mit Slogan und „GmbH“, Datei `assets/logo/logo-variante-b.svg`) in allen Tools und Dokumenten [BESTÄTIGT, 2026-10-25]. Es wird als Inline-SVG mit `currentColor` eingebettet, Farbe `--ls-yellow`, mindestens 280 px breit (darunter ist der Slogan im Logo unlesbar). Das Logo steht **immer auf Navy** – im Kopfbalken hell wie dunkel und im Druck (Hintergrundfarben erzwungen). Die Navy-Umfärbung (`.ls-header__logo--navy`) ist keine zweite Logofassung für den Regelfall, sondern die Ausweichregel für Stellen ohne Navy-Fläche (z. B. ein Fuß auf Weiß, eine Kachel auf Creme); solche Stellen gibt es in den Tools derzeit nicht. Variante A (ohne Slogan) wird nicht verwendet.
-4. Je Ansicht genau **ein** primärer Button in Navy/Stahlblau. Alles andere sekundär (weiß mit Rand) oder dezent.
+4. Je Ansicht genau **ein** primärer Button in Navy/Stahlblau. Alles andere sekundär (weiß mit Rand) oder dezent. Ausnahme (2.1.4): der **Markenknopf** `.ls-btn--brand` für die Projektaktion „Neues Projekt“ – hell Navy mit weißer Schrift, dunkel Logo-Gelb mit Navy-Schrift. Er steht in der Projekt-Karte, nie neben dem Primärknopf der Berechnung, und ist kein Zustand (Regel 3) [BESTÄTIGT, Fabian 2026-11-09].
 5. Kein eigener Dunkelmodus pro Tool: wer `design.css` einbindet, bekommt ihn. Der Schalter im Kopf ist ein runder Symbolknopf ohne Text (`.ls-theme-toggle`, Mond im Hell-, Sonne im Dunkelmodus, `aria-label`), so zurückhaltend wie das Haus-Icon (Deckkraft 0,45 / 1 bei Berührung / 0,3 gedrückt); kein Textbutton [BESTÄTIGT, 2026-10-25].
 
 ---
@@ -244,6 +244,7 @@ Prüfen
 
 | Datum | Wer | Änderung |
 |---|---|---|
+| 2026-11-09 | Fabian, Claude Code (Umbau heizkoerper) | 2.1.4: Markenknopf `.ls-btn--brand` mit Tokens `--ls-brand-btn`, `--ls-brand-btn-hover/-active`, `--ls-on-brand-btn` (hell Navy/Weiß, dunkel Logo-Gelb/Navy) für „Neues Projekt“; Regel 2.4 ergänzt; Beispiel im Styleguide; Kontraste 14,1:1 (hell, Weiß auf Navy) und 12,1:1 (dunkel, Navy auf Logo-Gelb) [BELEGT, nachgerechnet 2026-11-09]; inline.py über alle Tools |
 | 2026-11-04 | Fabian (Backlog), Claude Code | 2.1.3: Einheit in `.ls-kpi__value small` auf Navy-Karten in Weiß mit 85 % Deckkraft; vorher grauer Textton, auf Navy kaum lesbar. Styleguide neu gebaut, inline.py über alle Tools |
 | 2026-10-25 | Claude Code (Umbau kostenvergleich), Entscheidung Fabian Esche | 2.1.1: Baustein Regler mit Zahlenfeld `.ls-range` (design.css 10.12) und `LS.regler` in ls.js; Regel in Abschnitt 6; Beispiel im Styleguide. Kennzahlen auf Navy (`.ls-card--navy .ls-kpi`). Felder einer Zeile beginnen oben (`.ls-field` align-content: start), damit Regler und Eingaben auf einer Höhe stehen. Kopf ohne Titelblock: `.ls-header__meta` darf den Titel enthalten und steht rechts bündig |
 | 2026-10-25 | Claude (Firmenaccount), Entscheidung Fabian Esche | 2.1: Lückenanalyse umgesetzt – Startseiten-Kacheln, Positionsliste, Inline-Rückfrage, Dialog, Toast, Stepper, Datenstand, „So geht’s“, Karten-Tabellen, Diagramm-Tokens, Datei-Baustein, Berichtsvorlage; `ls.js`; Icon-Satz; Homescreen-Symbol aus Logo A; Einfügen von CSS/JS beim Veröffentlichen; Druck nur Bericht, keine Seitenzahlen; iPadOS 16; Vokabular; UMBAU-ABLAUF.md, Feldliste, CLAUDE.md, CHANGELOG.md |
