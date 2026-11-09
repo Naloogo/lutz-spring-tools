@@ -1,6 +1,6 @@
 # Feldliste · heizkoerper.html (Heizkörper-Auslegung)
 
-Stand: 2026-11-08 · Erstellt von: Claude Code (Sitzung Umbau heizkoerper) · Geprüft von Fabian: ☐ (Datum)
+Stand: 2026-11-08 · Erstellt von: Claude Code (Sitzung Umbau heizkoerper) · Geprüft von Fabian: ☑ 2026-11-08 („passt“); die Vorschläge zu den offenen Fragen 1–14 gelten damit als angenommen
 Zweck: Vor dem Neubau nach DESIGNREGELN.md 6.1 jedes Feld der Altfassung befragen. Erst nach Freigabe bauen.
 Alle Beispielwerte erfunden, keine Kundendaten. Altfassung: `alt/heizkoerper_2026-11-08.html` (byteidentisch mit dem Stand im Git, Commit f754073; SHA-256 `4c5e7894…047d7`).
 
