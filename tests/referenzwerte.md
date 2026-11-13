@@ -5,7 +5,7 @@ Zweck: Nachweis, dass ein Umbau nichts an der Rechnung ändert (UMBAU-ABLAUF.md 
 
 Die Spalte „erwartet (Formel)“ ist aus dem Rechenteil der Altfassung nachgerechnet (Python, gleiche Formeln und Rundung) und dient nur als Plausibilitätsprüfung; maßgeblich ist die Messung in der Altfassung.
 
-Testfälle je Tool: A1–A6 `auslegung.html` (angelegt 2026-10-25; A5 nur neu, A6 Erweiterung Kaskade) · K1–K6 `kostenvergleich.html` · F1–F6 `foerderung.html` (angelegt 2026-10-26) · H1–H6 `heizkoerper.html` (angelegt 2026-11-08) · B1–B3 `bestandsaufnahme.html`. Die Fälle der noch nicht begonnenen Tools werden beim jeweiligen Umbau (Schritt 2) angelegt.
+Testfälle je Tool: A1–A6 `auslegung.html` (angelegt 2026-10-25; A5 nur neu, A6 Erweiterung Kaskade) · K1–K6 `kostenvergleich.html` · F1–F6 `foerderung.html` (angelegt 2026-10-26) · H1–H6 `heizkoerper.html` (angelegt 2026-11-08) · B1–B3 `bestandsaufnahme.html` (angelegt 2026-11-10) · M1–M3 `ausdehnungsgefaess.html` (Neubau, angelegt 2026-11-10, nur „neu“). Die Fälle der noch nicht begonnenen Tools werden beim jeweiligen Umbau (Schritt 2) angelegt.
 
 ---
 
@@ -507,4 +507,148 @@ Erwartet: Bericht gruppiert nach Etagen EG (Wohnzimmer, Flur, Wohnküche), 1. OG
 | GAEB-Positionen (bis 2026-11-09; danach entfernt, 06) | – | Pos. 1: 6 Räume, 7 Items · Pos. 2: 5 Items · Pos. 3: 2 Items | wohlgeformt · Pos. 1 „Heizkörper“ mit Untergruppen EG Wohnzimmer, Küche, 1. OG Bad, EG Flur, EG Wohnküche, DG Schlafzimmer, 7 Items · Pos. 2 „Installationsmaterial“ 5 Items · Pos. 3 „Arbeits- und Serviceleistungen“ 2 Items (Entsorgungspauschale, Auftragspauschale); 14 Kurztexte wie erwartet | wohlgeformt · Pos. 1 „Heizkörper“ mit sechs Raum-Untergruppen, 7 Items · Pos. 2 „Installationsmaterial“ 5 Items · Pos. 3 2 Items; 14 Kurztexte identisch mit alt | gleich |
 
 ## bestandsaufnahme.html · B1–B3
-Noch anzulegen beim Umbau des Tools (Schritt 2). Je Fall: erfasste Positionen und erzeugte `lager.json` (nur Artikel und Stückzahlen).
+
+Altfassung: `alt/bestandsaufnahme_2026-11-10.html` · Feldliste: `tests/feldliste-bestandsaufnahme.md`. Angelegt 2026-11-10 (Schritt 2), nur erfundene Werte.
+Das Tool rechnet nichts; geprüft wird das, was es erzeugt: Positionsobjekte, Zusammenführen gleicher Positionen, Fehlertexte, Zähler und die Datei `lager.json` (Struktur `_hinweis`, `stand`, `bestand`; Schlüsselreihenfolge `hersteller, typ, bh, bl, stueck, v, bauform, anschluss, notiz`; Einrückung 2 Leerzeichen). Die Spalte „erwartet (Formel)“ ist aus dem Skript der Altfassung abgeleitet (`leseFormular`, Zusammenführen, Laden, Download). Messung „alt“ am 2026-11-10 in der unveränderten Altfassung (lokaler Server, headless Chrome über das Debug-Protokoll, frisches Profil; Eingaben per Skript in die Felder, Knöpfe geklickt, Toasts mitgeschrieben, Download abgefangen und als Datei abgelegt). **Alle Werte stimmen mit „erwartet (Formel)“ überein**, keine Konsolenfehler. Messung „neu“ am 2026-11-10 in der Neufassung mit derselben Methode (Radios statt Auswahllisten, Fehlertexte am Feld mitgelesen, Rückfragen bestätigt): **die erzeugten Dateien B1–B3 sind byteidentisch mit denen der Altfassung** (`cmp`), Positionsobjekte, Zähler, Stand und Reihenfolge gleich, keine Konsolenfehler. Einzige gewollte Abweichung: der Fehlerfall „Stück 0“ ist mit dem Stepper nicht mehr erreichbar (B2, Schritt 3). PDFs entfallen (die Altfassung druckt nicht); stattdessen liegen die erzeugten Dateien unter `tests/pdf/bestandsaufnahme_B1_alt.json` … `_neu.json` (Ordner wie bei den anderen Tools).
+
+### B1 · Leere Liste, drei Positionen erfassen, gleiche Position ein zweites Mal (Zusammenführen)
+Eingaben in dieser Reihenfolge, Stand auf 2026-11-10 gesetzt:
+1. Kermi therm-x2 · Typ 22 · Ausführung K · Bauform Profil · 600 × 1000 mm · 2 Stück · Notiz „Regal A3“
+2. Kermi therm-x2 · Typ 33 · Ausführung V · Bauform Plan · Anschluss links · 605 × 1205 mm · 1 Stück · ohne Notiz
+3. Arbonia Röhren · 3-Säuler · 500 × 1000 mm · 1 Stück · ohne Notiz (Ausführung, Bauform, Anschluss sind ausgeblendet)
+4. noch einmal Kermi therm-x2 · Typ 22 · K · Profil · 600 × 1000 mm · 1 Stück · Notiz „Regal B1“ → wird mit Position 1 zusammengeführt
+Danach „lager.json herunterladen“.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Rückmeldung nach Eingabe 1–3 | – | „Heizkörper hinzugefügt.“ (3×) | „Heizkörper hinzugefügt.“ (3×) | „Gespeichert“ (3×) | gleich (Wortlaut) |
+| Rückmeldung nach Eingabe 4 | – | „Vorhandene Position ergänzt (Stück addiert).“ | „Vorhandene Position ergänzt (Stück addiert).“ | „Vorhandene Position ergänzt (Stück addiert)“ | gleich |
+| Zähler | – | „3 Positionen · 5 Stück“ | „3 Positionen · 5 Stück“ | „3 Positionen · 5 Stück“ | gleich |
+| Position 1 | Objekt | `{"hersteller":"kermi","typ":"22","bh":600,"bl":1000,"stueck":3,"v":"K","bauform":"profil","notiz":"Regal B1"}` (Stück 2 + 1, Notiz ersetzt) | identisch (Stück 3, Notiz „Regal B1“, Schlüsselreihenfolge hersteller, typ, bh, bl, stueck, v, bauform, notiz) | identisch mit alt (JSON-Vergleich) | gleich |
+| Position 2 | Objekt | `{"hersteller":"kermi","typ":"33","bh":605,"bl":1205,"stueck":1,"v":"V","bauform":"plan","anschluss":"links"}` | identisch (v „V“, bauform „plan“, anschluss „links“, keine Notiz) | identisch mit alt | gleich |
+| Position 3 | Objekt | `{"hersteller":"arbonia","typ":"3","bh":500,"bl":1000,"stueck":1}` (kein `v`, keine `bauform`, kein `anschluss`) | identisch (`{"hersteller":"arbonia","typ":"3","bh":500,"bl":1000,"stueck":1}`) | identisch mit alt | gleich |
+| Liste (Anzeige) | – | Zeile 1 „Kermi therm-x2 · Typ 22 Profil · K · 600 · 1000 · 3 · Regal B1“ · Zeile 2 „Kermi therm-x2 · Typ 33 Plan · V (links) · 605 · 1205 · 1 · –“ · Zeile 3 „Arbonia Röhren · 3-Säuler · – · 500 · 1000 · 1 · –“ | Zeilen wortgleich: „Kermi therm-x2 · Typ 22 Profil · K · 600 · 1000 · 3 · Regal B1“ · „Kermi therm-x2 · Typ 33 Plan · V (links) · 605 · 1205 · 1 · –“ · „Arbonia Röhren · 3-Säuler · – · 500 · 1000 · 1 · –“ | Zeilen als `.ls-items`: „Typ 22 Profil · K · Kermi therm-x2 600 × 1000 mm · Regal B1 · Stück 3“ · „Typ 33 Plan · V · links · Kermi therm-x2 605 × 1205 mm · Stück 1“ · „3-Säuler · Arbonia Röhren 500 × 1000 mm · Stück 1“ (Stück im Stepper) | gleich (Darstellung) |
+| Datei `lager.json` | – | `stand` „2026-11-10“ · `bestand` = Positionen 1–3 in dieser Reihenfolge · `_hinweis` wörtlich wie alt · Dateiname `lager.json` | Dateiname `lager.json` · `stand` „2026-11-10“ · `_hinweis` wörtlich · drei Positionen wie oben; Rückmeldung „lager.json heruntergeladen.“ → `tests/pdf/bestandsaufnahme_B1_alt.json` | `tests/pdf/bestandsaufnahme_B1_neu.json` byteidentisch mit `_alt.json` (`cmp`); Dateiname `lager.json`; Rückmeldung „lager.json erstellt“ | gleich |
+
+### B2 · Fehlertexte, Bearbeiten, Löschen
+Ausgangslage: Liste aus B1 (drei Positionen, 5 Stück). Dann:
+1. Kermi therm-x2 · Typ 11 · **ohne Ausführung** · 300 × 800 mm · 1 Stück → Fehlertext, nichts gespeichert
+2. Kermi therm-x2 · Typ 11 · K · Bauhöhe leer · 800 mm → Fehlertext
+3. Kermi therm-x2 · Typ 11 · K · 300 × 800 mm · 0 Stück → Fehlertext
+4. Position 2 (Typ 33 Plan V links) bearbeiten: Anschluss rechts, 2 Stück, Notiz „Regal C2“ → speichern
+5. Position 3 (Arbonia) löschen
+6. Kermi Verteo-Profil · Verteo Typ 21 · 1800 × 600 mm · 1 Stück (Ausführung, Bauform, Anschluss ausgeblendet) → hinzufügen
+Danach „lager.json herunterladen“ (Stand 2026-11-10).
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Fehler 1 (Ausführung fehlt) | – | „Bitte die Ausführung angeben (K oder V).“; Liste unverändert (3 Positionen · 5 Stück) | „Bitte die Ausführung angeben (K oder V).“ · Liste unverändert (3 Positionen · 5 Stück) | Fehlertext am Segment „Ausführung wählen: K (seitlich) oder V (Ventil, Mittelanschluss).“, Fokus auf K · Liste unverändert (3 Positionen · 5 Stück) | gleich (Darstellung) |
+| Fehler 2 (Bauhöhe fehlt) | – | „Bitte Bauhöhe und Baulänge angeben.“ | „Bitte Bauhöhe und Baulänge angeben.“ | Fehlertext am Feld „Bauhöhe in mm eintragen, z. B. 600.“, Fokus im Feld | gleich (Darstellung) |
+| Fehler 3 (Stück 0) | – | „Bitte eine Stückzahl ≥ 1 angeben.“ | „Bitte eine Stückzahl ≥ 1 angeben.“ · danach weiter 3 Positionen · 5 Stück | Mit dem Stepper nicht erreichbar: Eingabe 0 klemmt bei 1, Minus gesperrt, kein Speichern ausgelöst; Liste unverändert (3 Positionen · 5 Stück). Die Prüfung „Stück ≥ 1“ bleibt im Code (Fehlertext „Stückzahl mindestens 1.“) | gewollt abweichend (Stepper, Regel 7; 06 vom 2026-11-10) |
+| Nach Bearbeiten (4) | Objekt | Position 2 = `{"hersteller":"kermi","typ":"33","bh":605,"bl":1205,"stueck":2,"v":"V","bauform":"plan","anschluss":"rechts","notiz":"Regal C2"}`; Rückmeldung „Position aktualisiert.“; Knopf wieder „+ Hinzufügen“ | Formular beim Bearbeiten: kermi · 33 · V · plan · links · 605 · 1205 · 1, Knopf „✓ Speichern“, Hinweis „✏️ Du bearbeitest eine vorhandene Position …“; nach Speichern Position 2 identisch mit erwartet (Stück 2, anschluss „rechts“, Notiz „Regal C2“), „Position aktualisiert.“, Knopf wieder „+ Hinzufügen“ | Formular beim Bearbeiten: kermi · 33 · V · plan · links · 605 · 1205 · 1; Knopf bleibt „+ Position speichern“, Kartenzeile „Position 2 bearbeiten“, Hinweis „Du bearbeitest Position 2 (Kermi therm-x2 Typ 33 Plan V links 605 × 1205 mm) …“, Position in der Liste markiert; nach Speichern Position 2 identisch mit alt, „Position aktualisiert“, Kartenzeile wieder „Neue Position“ | gleich (Darstellung) |
+| Nach Löschen (5) | – | „Position gelöscht.“ · Zähler „2 Positionen · 5 Stück“ | „Position gelöscht.“ (ohne Rückfrage) · „2 Positionen · 5 Stück“ | Rückfrage „Position 3 löschen?“ bestätigt · „Position gelöscht“ · „2 Positionen · 5 Stück“ | gleich (Rückfrage neu, Feldliste) |
+| Nach Hinzufügen (6) | Objekt | Position 3 = `{"hersteller":"verteo","typ":"21","bh":1800,"bl":600,"stueck":1}`; Zähler „3 Positionen · 6 Stück“ | Ausführung, Bauform, Anschluss ausgeblendet; „Heizkörper hinzugefügt.“ · Position 3 identisch (`verteo`, `21`, 1800, 600, 1) · „3 Positionen · 6 Stück“ | Ausführung, Bauform, Anschlussseite ausgeblendet; „Gespeichert“ · Position 3 identisch · „3 Positionen · 6 Stück“ | gleich |
+| Datei `lager.json` | – | `stand` „2026-11-10“ · `bestand` = [Position 1 aus B1 (Stück 3, „Regal B1“), Position 2 neu, Verteo-Position] | `stand` „2026-11-10“ · drei Positionen wie erwartet → `tests/pdf/bestandsaufnahme_B2_alt.json` | `tests/pdf/bestandsaufnahme_B2_neu.json` byteidentisch mit `_alt.json` | gleich |
+
+### B3 · Repo-Datei laden, unverändert sichern (Rundlauf byteidentisch), fehlerhafte Datei
+1. `lager.json` aus dem Repo (Stand 2026-08-12, 14 Positionen) über „lager.json laden“ einlesen.
+2. Ohne Änderung „lager.json herunterladen“; Datei mit der Repo-Datei vergleichen (`shasum -a 256`).
+3. Eine Datei mit Inhalt `{"stand":"2026-11-10"}` (ohne `bestand`) laden → Fehlertext, Liste bleibt.
+4. Eine Datei mit nacktem Array `[{"hersteller":"zehnder","typ":"4","bh":600,"bl":920}]` laden → eine Position, Stück 1.
+
+| Kennzahl | Einheit | erwartet (Formel) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Nach Laden (1) | – | „14 Positionen geladen.“ · Zähler „14 Positionen · 14 Stück“ · Stand-Feld „2026-08-12“ · Reihenfolge wie in der Datei (erste Zeile Kermi Typ 22 Profil V (links) 600 × 600, letzte Zeile Kermi Typ 33 Profil K 500 × 1200) | „14 Positionen geladen.“ · „14 Positionen · 14 Stück“ · Stand-Feld „2026-08-12“ · Reihenfolge wie in der Datei (erste Zeile Typ 22 Profil V (links) 600 · 600, letzte Typ 33 Profil K 500 · 1200) | „14 Positionen geladen“ · „14 Positionen · 14 Stück“ · Stand-Feld „2026-08-12“, Badge „Stand 2026-08-12“ · Reihenfolge wie in der Datei (erste Zeile Typ 22 Profil V links 600 × 600, letzte Typ 33 Profil K 500 × 1200) | gleich |
+| Rundlauf (2) | Text | inhaltsgleich mit der Repo-Datei `lager.json` (SHA-256 `7d042a3f…8cb564`, 2 926 Zeichen): `_hinweis`, `stand` „2026-08-12“, Reihenfolge, Schlüssel und Einrückung bleiben erhalten. Einziger Unterschied: die Repo-Datei endet mit einem Zeilenumbruch, der Download der Altfassung nicht (2 925 Zeichen; `JSON.stringify` ohne Abschluss). Vorab mit Node am Skript der Altfassung geprüft (2026-11-10) | Download 2 925 Zeichen, inhaltsgleich mit der Repo-Datei bis auf den fehlenden Zeilenumbruch am Ende (Vergleich im Messskript: gleich ohne Schlusszeile = ja) → `tests/pdf/bestandsaufnahme_B3_alt.json` | `tests/pdf/bestandsaufnahme_B3_neu.json` byteidentisch mit `_alt.json`; wie alt inhaltsgleich mit der Repo-Datei bis auf den Zeilenumbruch am Ende (2 925 Zeichen) | gleich |
+| Fehlerdatei (3) | – | „Datei konnte nicht gelesen werden: Feld "bestand" nicht gefunden“ · Liste weiter 14 Positionen | „Datei konnte nicht gelesen werden: Feld "bestand" nicht gefunden“ · weiter 14 Positionen · 14 Stück | Rückfrage „14 vorhandene Positionen durch die Datei ersetzen?“ bestätigt · „Datei konnte nicht gelesen werden: Feld "bestand" nicht gefunden“ · weiter 14 Positionen · 14 Stück | gleich (Rückfrage neu) |
+| Nacktes Array (4) | Objekt | „1 Positionen geladen.“ · Position `{"hersteller":"zehnder","typ":"4","bh":600,"bl":920,"stueck":1}` · Stand-Feld unverändert (kein `stand` in der Datei) | „1 Positionen geladen.“ (Plural im Toast) · Zähler „1 Position · 1 Stück“ · Position identisch · Stand-Feld weiter „2026-08-12“ | Rückfrage bestätigt · „1 Position geladen“ (Singular) · Zähler „1 Position · 1 Stück“ · Position identisch · Stand-Feld weiter „2026-08-12“ | gleich (Wortlaut) |
+
+## ausdehnungsgefaess.html · M1–M3
+
+Neubau 2026-11-10, keine Altfassung, deshalb nur Spalte „neu“. Feldliste: `tests/feldliste-ausdehnungsgefaess.md`. Rechenmodell nach Reflex „Fachgerecht planen, berechnen und ausrüsten“ (2019), S. 7/10/12, Berechnung nach DIN EN 12828 [VORSCHLAG bis Freigabe Fabian]. Spalte „erwartet (Formel)“ aus dem Skript `mag.py` (gleiche Formeln, Python, 2026-11-10). Rundung: Volumen 1 Nachkommastelle, Drücke 2 Nachkommastellen, n 2 Nachkommastellen; Zwischenwerte ungerundet weitergerechnet.
+
+Gegenprobe des Modells an der Reflex-Schnellauswahltabelle (S. 92, Heizung 90/70 °C, p<sub>SV</sub> 3 bar): V<sub>A</sub> 2 100 l bei p<sub>0</sub> 1,0 bar → V<sub>n</sub> = (75,18 + 10,5) × 3,5 ÷ 1,5 = 199,9 l → N 200 (Tabelle: N 200 bis 2 100 l) · V<sub>A</sub> 2 800 l bei p<sub>0</sub> 0,5 bar (Mindest-Vordruck für die Probe auf 0 gesetzt) → (100,24 + 14,0) × 3,5 ÷ 2,0 = 199,9 l → N 200 (Tabelle: bis 2 800 l). Beide stimmen; die Anfangsdruck-Kontrolle mit 0,25 bar Abstand lässt N 200 in beiden Fällen zu (p<sub>a</sub> 1,28 bzw. 0,80 bar), mit 0,3 bar nicht. Deshalb Standard 0,25 bar.
+
+Rohrinhalte (l/m): Cu 15 × 1,0 0,133 · 18 × 1,0 0,201 · 22 × 1,0 0,314 · Temponox 28 × 1,2 0,51 · FBH 16 × 2,0 0,113. Kermi je Platte und Meter: BH 500 2,61 · BH 600 3,05 l/m.
+
+### M1 · Wärmepumpe Evoblock, Einfamilienhaus, kleines Gefäß (Regel V<sub>n</sub> ≤ 15 l), eingebautes MAG reicht
+Eingaben: Wärmeerzeuger Wärmepumpe · VL/RL 50/40 °C · p<sub>SV</sub> 3,0 bar · statische Höhe 7 m · Wasserinhalt schätzen: Puffer 120 l · Rohrnetz Cu 15: 60 m, Cu 18: 40 m, Cu 22: 25 m, Temponox 28: 10 m · keine Fußbodenheizung · Heizkörper: Typ 22 BH 600, 6 Stück à 1 000 mm; Typ 11 BH 600, 3 Stück à 800 mm · Erzeuger 0 l · Sonstiges 0 l · eingebautes MAG 18 l · Rechenregeln Standard (0,2 / 1,0 / 0,25 bar).
+
+Rechenweg:
+- Rohrnetz = 60 × 0,133 + 40 × 0,201 + 25 × 0,314 + 10 × 0,51 = 7,98 + 8,04 + 7,85 + 5,10 = 28,97 l
+- Heizkörper = 6 × 1,0 m × 2 Platten × 3,05 + 3 × 0,8 m × 1 Platte × 3,05 = 36,60 + 7,32 = 43,92 l
+- V<sub>A</sub> = 120 + 28,97 + 43,92 = 192,89 l
+- n(50 °C) = 1,15 % · n<sub>R</sub>(40 °C) = 0,72 %
+- V<sub>e</sub> = 1,15 ÷ 100 × 192,89 = 2,218 l
+- p<sub>st</sub> = 7 ÷ 10 = 0,70 bar · p<sub>0</sub> = max(0,70 + 0,2; 1,0) = 1,00 bar
+- p<sub>e</sub> = 3,0 − 0,5 = 2,50 bar · Prüfung p<sub>SV</sub> ≥ 1,0 + 1,5 = 2,5 bar: erfüllt
+- k = (2,5 + 1) ÷ (2,5 − 1,0) = 2,333
+- Erster Ansatz V<sub>V</sub> = max(0,005 × 192,89; 3) = 3 l → V<sub>n</sub> = (2,218 + 3) × 2,333 = 12,2 l ≤ 15 l → Regel V<sub>V</sub> = 0,2 V<sub>n</sub>: V<sub>n</sub> = 2,218 × 2,333 ÷ (1 − 0,2 × 2,333) = 5,176 ÷ 0,5333 = 9,7 l · V<sub>V</sub> = 1,94 l
+- Gefäßwahl: Reflex N 12 (nächstgrößer); Kontrolle p<sub>a</sub> = 3,5 ÷ [1 + 2,218 × 3,5 × (1,15 + 0,72) ÷ (12 × 2,0 × 2 × 1,15)] − 1 = 3,5 ÷ (1 + 14,52 ÷ 55,2) − 1 = 3,5 ÷ 1,263 − 1 = 1,77 bar ≥ 1,25 bar: erfüllt
+- Eingebautes Gefäß 18 l ≥ 9,7 l → reicht; Vordruck am eingebauten Gefäß auf 1,00 bar einstellen
+- Fülldruck p<sub>F</sub> = p<sub>a</sub> = 1,77 bar (10 °C, entlüftet)
+
+| Kennzahl | Einheit | erwartet (Formel) | neu (gemessen) | Status |
+|---|---|---|---|---|
+| Anlagenwasserinhalt V<sub>A</sub> | l | 192,9 | | |
+| Ausdehnung n / n<sub>R</sub> | % | 1,15 / 0,72 | | |
+| Ausdehnungsvolumen V<sub>e</sub> | l | 2,2 | | |
+| Wasservorlage V<sub>V</sub> | l | 1,9 | | |
+| Vordruck p<sub>0</sub> | bar | 1,00 | | |
+| Enddruck p<sub>e</sub> | bar | 2,50 | | |
+| Nennvolumen erforderlich V<sub>n</sub> | l | 9,7 | | |
+| Gefäß gewählt | – | Reflex N 12 | | |
+| Anfangs-/Fülldruck p<sub>a</sub> = p<sub>F</sub> | bar | 1,77 | | |
+| Eingebautes Gefäß 18 l | – | reicht | | |
+
+### M2 · Gas-/Ölkessel Bestand 75/65 °C, Fußbodenheizung und Heizkörper, statische Höhe 10 m
+Eingaben: Wärmeerzeuger Kessel · VL/RL 75/65 °C · p<sub>SV</sub> 3,0 bar · statische Höhe 10 m · Wasserinhalt schätzen: Puffer 0 l · Erzeuger 25 l (Erweitert) · Rohrnetz Cu 18: 50 m, Cu 22: 40 m, Temponox 28: 15 m · Fußbodenheizung 90 m², Verlegeabstand 15 cm, Rohr 16 × 2,0 · Heizkörper Typ 22 BH 500, 10 Stück à 1 200 mm · kein eingebautes MAG · Rechenregeln Standard.
+
+Rechenweg:
+- Fußbodenheizung: Rohrlänge = 90 ÷ 0,15 = 600 m → 600 × 0,113 = 67,80 l
+- Rohrnetz = 50 × 0,201 + 40 × 0,314 + 15 × 0,51 = 10,05 + 12,56 + 7,65 = 30,26 l
+- Heizkörper = 10 × 1,2 m × 2 Platten × 2,61 = 62,64 l (mit dem Tabellenwert 5,23 l/m für zwei Platten: 62,76 l; das Tool rechnet je Platte 2,61 → 62,64 l, Abweichung Rundung der Quelle)
+- V<sub>A</sub> = 25 + 67,80 + 30,26 + 62,64 = 185,70 l
+- n(75 °C) = 2,24 + (2,88 − 2,24) × 5 ÷ 10 = 2,56 % · n<sub>R</sub>(65 °C) = 1,66 + (2,24 − 1,66) × 0,5 = 1,95 %
+- V<sub>e</sub> = 2,56 ÷ 100 × 185,70 = 4,754 l
+- p<sub>st</sub> = 1,00 bar · p<sub>0</sub> = max(1,00 + 0,2; 1,0) = 1,20 bar
+- p<sub>e</sub> = 2,50 bar · Prüfung p<sub>SV</sub> ≥ 1,2 + 1,5 = 2,7 bar: erfüllt
+- k = 3,5 ÷ 1,3 = 2,692 · V<sub>V</sub> = max(0,93; 3) = 3 l · V<sub>n</sub> = (4,754 + 3) × 2,692 = 20,9 l (> 15 l, Regel bleibt)
+- Gefäßwahl Reflex N 25; Kontrolle p<sub>a</sub> = 3,5 ÷ [1 + 4,754 × 3,5 × (2,56 + 1,95) ÷ (25 × 2,2 × 2 × 2,56)] − 1 = 3,5 ÷ (1 + 75,04 ÷ 281,6) − 1 = 3,5 ÷ 1,2665 − 1 = 1,76 bar ≥ 1,45 bar: erfüllt
+- p<sub>F</sub> = 1,76 bar
+
+| Kennzahl | Einheit | erwartet (Formel) | neu (gemessen) | Status |
+|---|---|---|---|---|
+| Anlagenwasserinhalt V<sub>A</sub> | l | 185,7 | | |
+| Ausdehnung n / n<sub>R</sub> | % | 2,56 / 1,95 | | |
+| Ausdehnungsvolumen V<sub>e</sub> | l | 4,8 | | |
+| Wasservorlage V<sub>V</sub> | l | 3,0 | | |
+| Vordruck p<sub>0</sub> | bar | 1,20 | | |
+| Enddruck p<sub>e</sub> | bar | 2,50 | | |
+| Nennvolumen erforderlich V<sub>n</sub> | l | 20,9 | | |
+| Gefäß gewählt | – | Reflex N 25 | | |
+| Anfangs-/Fülldruck p<sub>a</sub> = p<sub>F</sub> | bar | 1,76 | | |
+
+### M3 · WWP LA 20/30, Wasserinhalt bekannt, Sicherheitsventil 5,4 bar (> 5 bar), Betriebsdruck-Hinweis
+Eingaben: Wärmeerzeuger Wärmepumpe · VL/RL 50/40 °C · p<sub>SV</sub> 5,4 bar · statische Höhe 14 m · Wasserinhalt bekannt: 1 500 l · zulässiger Betriebsüberdruck Gerät 4,5 bar (Erweitert) · eingebautes MAG 0 l · Rechenregeln Standard.
+
+Rechenweg:
+- n = 1,15 % · n<sub>R</sub> = 0,72 % · V<sub>e</sub> = 1,15 ÷ 100 × 1 500 = 17,25 l
+- p<sub>st</sub> = 1,40 bar · p<sub>0</sub> = 1,40 + 0,2 = 1,60 bar
+- p<sub>SV</sub> > 5 bar: p<sub>e</sub> = 5,4 − 0,1 × 5,4 = 4,86 bar · Prüfung p<sub>SV</sub> ≥ 1,6 + 2,0 = 3,6 bar: erfüllt
+- Hinweis (warn): p<sub>e</sub> 4,86 bar liegt über dem zulässigen Betriebsüberdruck des Geräts 4,5 bar → Sicherheitsventil und Betriebsdruck mit dem Datenblatt abstimmen
+- k = 5,86 ÷ 3,26 = 1,798 · V<sub>V</sub> = max(7,5; 3) = 7,5 l · V<sub>n</sub> = (17,25 + 7,5) × 1,798 = 44,5 l
+- Gefäßwahl Reflex N 50; Kontrolle p<sub>a</sub> = 5,86 ÷ [1 + 17,25 × 5,86 × 1,87 ÷ (50 × 2,6 × 2,3)] − 1 = 5,86 ÷ (1 + 189,0 ÷ 299,0) − 1 = 5,86 ÷ 1,632 − 1 = 2,59 bar ≥ 1,85 bar: erfüllt
+- p<sub>F</sub> = 2,59 bar
+
+| Kennzahl | Einheit | erwartet (Formel) | neu (gemessen) | Status |
+|---|---|---|---|---|
+| Anlagenwasserinhalt V<sub>A</sub> | l | 1 500 | | |
+| Ausdehnungsvolumen V<sub>e</sub> | l | 17,3 | | |
+| Wasservorlage V<sub>V</sub> | l | 7,5 | | |
+| Vordruck p<sub>0</sub> | bar | 1,60 | | |
+| Enddruck p<sub>e</sub> | bar | 4,86 | | |
+| Nennvolumen erforderlich V<sub>n</sub> | l | 44,5 | | |
+| Gefäß gewählt | – | Reflex N 50 | | |
+| Anfangs-/Fülldruck p<sub>a</sub> = p<sub>F</sub> | bar | 2,59 | | |
+| Hinweis Betriebsüberdruck 4,5 bar | – | wird angezeigt | | |
