@@ -1,6 +1,6 @@
 # Designregeln für die internen Werkzeuge der Lutz Spring GmbH
 
-Version 2.1.4 · Stand 2026-11-09 · gilt für alle bestehenden und künftigen HTML-Tools im Repo
+Version 2.1.5 · Stand 2026-11-13 · gilt für alle bestehenden und künftigen HTML-Tools im Repo
 Zugehörige Dateien: `assets/css/design.css` (Stil), `assets/js/ls.js` (gemeinsames Verhalten), `assets/icons/` (Symbole), `assets/logo/` (Logo), `styleguide.html` (lebende Referenz), `vorlagen/` (tool-vorlage, bericht-vorlage, index-vorlage, feldliste-vorlage), `UMBAU-ABLAUF.md` (Schritte je Tool), `CLAUDE.md` (Anweisungen für die KI im Repo), `CHANGELOG.md`
 Kennzeichnung wie im Firmengehirn: [BESTÄTIGT] = von Fabian/GF entschieden · [VORSCHLAG] = von Claude vorgeschlagen, noch nicht bestätigt · [BELEGT] = rechnerisch oder am Datenblatt geprüft
 
@@ -178,8 +178,8 @@ Berichte entstehen über Safari „Drucken → Als PDF sichern“ und gehen in d
 
 - Gedruckt werden nur **Kopf, Ergebnis, Bericht/Bestellung und Fuß**. Formulare, Toolbars, Segmente, Hilfen, Positionslisten und das Haus-Icon nie (Ausnahme per `.ls-print-form`, wenn ein Formular bewusst gedruckt wird). Keine Seitenzahlen [BESTÄTIGT, 2026-10-25].
 - Jedes Druckdokument folgt `vorlagen/bericht-vorlage.html`: Deckkopf (Logo B, Dokumenttitel, Kunde/Projekt, Datum, Anzahl) · Rahmendaten `.ls-report__meta` · je Raum/Position eine Karte mit Label/Wert-Liste und Notiz · Bestell- oder Positionstabelle mit Summenzeile `.ls-report__sum`, bei Bedarf auf neuer Seite (`.ls-page-break`) · Unterschriftszeile `.ls-report__sign` nur bei Kundenbestätigung · Fuß mit Norm, „Angaben ohne Gewähr“, Toolname und Stand [BESTÄTIGT, 2026-10-25].
-- Druck immer in **Hell**, auch wenn das Tool dunkel läuft. Hintergrundfarben erzwungen (`print-color-adjust: exact`), damit Navy-Kopf, Badges und Notizfelder erhalten bleiben [BESTÄTIGT, 2026-10-25].
-- A4, Ränder 12 mm. Karten, Kennzahlen, Tabellen, Notizen brechen nicht über die Seite.
+- Druck immer in **Hell**, auch wenn das Tool dunkel läuft oder das System im Dunkelmodus steht (seit 2.1.5 auch bei Systemdunkel wirksam; vorher blieben Karten dunkel und Überschriften unsichtbar). Hintergrundfarben erzwungen (`print-color-adjust: exact`), damit Navy-Kopf, Badges und Notizfelder erhalten bleiben [BESTÄTIGT, 2026-10-25; Fehler behoben 2026-11-13].
+- A4, Ränder 12 mm. Karten, Kennzahlen, Tabellen, Notizen brechen nicht über die Seite. Ausnahme (2.1.5): lange Berichtskarten mit `.ls-card--umbruch` (z. B. Raum mit Alternativen) dürfen zwischen Zeilen umbrechen, damit keine halben Seiten leer bleiben; Kartenkopf und einzelne Zeilen bleiben zusammen. Die Seite läuft im Druck im Blocklayout (kein Raster), der Fuß bleibt zusammen [BESTÄTIGT, Fabian 2026-11-13].
 - Ausgeblendet: Buttons, Toolbars, Segmente, Statuszeile, Haus-Icon und alles mit `.ls-no-print`. `.ls-print-only` für Druck-only-Inhalte (z. B. Unterschriftszeile).
 - Kunde/Projekt und Datum stehen im Druck im Kopfbalken (`ls-print-only`), nicht in der Browser-Kopfzeile; am Bildschirm zeigt der Kopf nur den Toolnamen.
 - Fuß des Berichts: Norm/Quelle, „Angaben ohne Gewähr – maßgeblich sind die Herstellerunterlagen“, „Erstellt mit dem internen Auslegungstool der Lutz Spring GmbH“.
@@ -244,6 +244,7 @@ Prüfen
 
 | Datum | Wer | Änderung |
 |---|---|---|
+| 2026-11-13 | Fabian, Claude Code (heizkoerper, PDF-Prüfung) | 2.1.5: Druck immer hell auch bei dunklem System (Selektor `:root:not([data-theme="light"])` im Druckblock, alle Dunkel-Tokens inkl. Diagrammfarben zurückgesetzt); Seite im Druck im Blocklayout statt Raster (erzwungene Umbrüche greifen, kein leerer Kartenrand am Seitenende); `.ls-card--umbruch` für lange Berichtskarten; Kartenkopf, Zeilen der Label/Wert-Liste und Fuß bleiben zusammen. PDFs aller Tools vorher/nachher verglichen [BELEGT] |
 | 2026-11-09 | Fabian, Claude Code (Umbau heizkoerper) | 2.1.4: Markenknopf `.ls-btn--brand` mit Tokens `--ls-brand-btn`, `--ls-brand-btn-hover/-active`, `--ls-on-brand-btn` (hell Navy/Weiß, dunkel Logo-Gelb/Navy) für „Neues Projekt“; Regel 2.4 ergänzt; Beispiel im Styleguide; Kontraste 14,1:1 (hell, Weiß auf Navy) und 12,1:1 (dunkel, Navy auf Logo-Gelb) [BELEGT, nachgerechnet 2026-11-09]; inline.py über alle Tools. Kopf zeigt am Bildschirm nur den Toolnamen, Kunde/Projekt und Datum nur im Druck (`ls-print-only`); in allen Tools und Vorlagen umgesetzt, „Neues Projekt“ überall als Markenknopf; „Bericht drucken / PDF“ in jedem Tool Primärknopf |
 | 2026-11-04 | Fabian (Backlog), Claude Code | 2.1.3: Einheit in `.ls-kpi__value small` auf Navy-Karten in Weiß mit 85 % Deckkraft; vorher grauer Textton, auf Navy kaum lesbar. Styleguide neu gebaut, inline.py über alle Tools |
 | 2026-10-25 | Claude Code (Umbau kostenvergleich), Entscheidung Fabian Esche | 2.1.1: Baustein Regler mit Zahlenfeld `.ls-range` (design.css 10.12) und `LS.regler` in ls.js; Regel in Abschnitt 6; Beispiel im Styleguide. Kennzahlen auf Navy (`.ls-card--navy .ls-kpi`). Felder einer Zeile beginnen oben (`.ls-field` align-content: start), damit Regler und Eingaben auf einer Höhe stehen. Kopf ohne Titelblock: `.ls-header__meta` darf den Titel enthalten und steht rechts bündig |

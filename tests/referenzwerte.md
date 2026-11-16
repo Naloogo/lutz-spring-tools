@@ -496,6 +496,18 @@ Rechenweg: ΔT<sub>log</sub>(50/40/21) = 23,6 K · 6-Säuler BH 600, 21 Glieder 
 | Gespeicherter Raum | – | Leistung 932 W · Deckung 58% · nötige VL 62.1 °C · erreichbare Raumtemp. 14.4 °C bei 1287 W · QN 2457 W | leistung 932 · deckung 58 · noetigeVL „62.1“ · erreichbareTemp „14.4“ · ggLeistung 1287 · qn 2457 · konsole null | Raumobjekt bis auf die Notiz identisch mit alt: 932 · 58 · „62.1“ · „14.4“ · 1287 · qn 2457 · konsole null | gleich |
 | Notiz (automatisch) | – | „Bitte beachten Sie: Die in diesem Raum maximal möglichen Installationsflächen reichen leider nicht aus, um Ihre Wunschtemperatur von 21 °C vollständig zu erreichen. Der gewählte Heizkörper deckt rund 80 % der benötigten 1600 Watt ab. Bei einer Norm-Außentemperatur von -12.7 °C stellt sich damit eine Raumtemperatur von etwa 14.4 °C ein. …“ (80 % = 1287 / 1600) | wortgleich; „rund 80 %“, „-12.7 °C“, „etwa 14.4 °C“; steht im Bericht als Notiz und in der Raumliste | Text wortgleich, Zahlen formatiert: „rund 80 %“, „1 600 Watt“, „−12,7 °C“, „etwa 14,4 °C“ (06, 2026-11-08) | gewollte Abweichung (Format) |
 
+### H7 · Alternative zu H1 (Erweiterung 5, nur Neufassung): Typ 33 V 600×1300 als Unterpunkt zum Raum „Wohnzimmer“
+Eingaben: Raum wie H1 gespeichert (Heizlast 1 100 W, Reserve 0 %, 20 °C, −12,7 °C, 50/40 °C, max. 600 × 1400 mm, Empfehlung Typ 33 K 500×1400) · „Alternative auslegen“ am Raum · Zeile Typ 33 V 600×1300 antippen · „+ Alternative speichern“. Vergleich: derselbe Heizkörper mit denselben Eingaben als normaler Raum gespeichert.
+Rechenweg: Typ 33 BH 600: 2 236 W/m × 1,3 m = 2 907 W × (24,66/49,83)<sup>1,2866</sup> = 1 176 W ≥ 1 100 W (107 %).
+
+| Kennzahl | Einheit | erwartet (normale Auslegung) | alt (gemessen) | neu (gemessen) | Status |
+|---|---|---|---|---|---|
+| Raumwerte im Alternativ-Modus | – | Heizlast 1 100 W, Reserve 0 %, 20 °C, −12,7 °C, 50/40 °C aus dem Raum, Felder gesperrt | – (Funktion neu) | Felder `raumName`, `heizlast`, `reserve`, `raumTemp`, `normAT`, `vl`, `rl`, `plz` gesperrt, Etage und Schnellwahl inaktiv; „6 Treffer · Ausführung K/V“ | gleich |
+| Objekt der Alternative | – | wie normaler Raum: Typ 33 V 600 × 1300 × 155 · FTV330601301R1K · 1176 W · Deckung 107 % · Konsole 1815979 · nötige VL 48.8 · erreichbare Raumtemp. 20.8 °C bei 1127 W | – | `alternativen[0]` identisch mit dem normal gespeicherten Raumobjekt (JSON-Vergleich ohne Name und Zeitstempel) | gleich |
+| Hauptauswahl | – | unverändert Typ 33 K 500×1400, FK0330514 | – | Raumobjekt unverändert (JSON-Vergleich), weiterhin 1 Raum | gleich |
+| Bestellübersicht | – | nur Hauptauswahl: 1 × FK0330514, Konsole 1 × 1815977 | – | `bestellUebersicht()` liefert nur FK0330514; Bericht nennt die Alternative in der Raumkarte mit „nicht in der Bestellübersicht“ | gleich |
+| Tauschen | – | Hauptauswahl FTV330601301R1K, frühere Auswahl FK0330514 als Alternative 1; Bestellübersicht folgt | – | wie erwartet; Name, Etage bleiben | gleich |
+
 ### H-Gesamt · alle sechs Räume in einem Projekt „BV Muster“ (Bericht und GAEB)
 Erwartet: Bericht gruppiert nach Etagen EG (Wohnzimmer, Flur, Wohnküche), 1. OG (Bad), DG (Schlafzimmer), „Ohne Etagenangabe“ (Küche). Bestellübersicht: Zu bestellende Heizkörper 1× FK0330514 · 1× FSN221808 · 2× FK0330610 · 1× FK0220610 · 1× „6060-21 · weiß“ = 6 Stück · Aus dem Lager entnehmen 1× FTV330601001R1K (Küche), 1× PTV330601101L1K (Bad) = 2 Stück · Konsolen: 1× 1815977, 1× 1815979 (H2) + 3× 1815979 (H5) = 4× 1815979, 1× 1816042, 2× ZB01380002, 2× ZB00290001 · Bestandsheizkörper: keine. GAEB: Pos. 1 mit sechs Raum-Untergruppen, Pos. 2 Installationsmaterial (5 Artikelzeilen), Pos. 3 ohne „Arbeitszeit Monteur“ (Montagezeit leer); XML wohlgeformt.
 

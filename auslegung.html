@@ -16,7 +16,7 @@
 /* ============================================================
    design.css · Lutz Spring GmbH · Heizung · Sanitär · Wärmepumpen
    Gemeinsames Designsystem für alle internen HTML-Tools.
-   Version 2.1.4 · Stand 2026-11-09 (Markenknopf .ls-btn--brand)
+   Version 2.1.5 · Stand 2026-11-13 (Druck immer hell, Blocklayout und Umbruch im Druck)
    Einbinden:  Beim Veröffentlichen fügt _build/inline.py diese Datei in jedes
                Tool ein (Marker design.css:start / design.css:end im HTML).
                Ein Tool bleibt so eine einzelne Datei.
@@ -722,22 +722,34 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
 
 /* ------------------------------------------------------------
    12 · DRUCK / PDF („Als PDF sichern“ aus Safari)
-   Bericht in Hell, Hintergrundfarben erzwungen, Karten ohne Umbruch.
+   Bericht in Hell (auch bei dunklem System und gesetztem Dunkel-Schalter), Hintergrundfarben erzwungen.
+   Karten brechen nicht um; lange Berichtskarten mit .ls-card--umbruch dürfen zwischen Zeilen umbrechen.
+   Seite im Blocklayout (2.1.5), weil das Raster im Druck unzuverlässig umbricht.
    Gedruckt werden nur Kopf, Ergebnis, Bericht und Fuß – nie das Formular. Keine Seitenzahlen.
    ------------------------------------------------------------ */
 @media print {
   @page { size: A4; margin: 12mm 12mm 14mm; }
-  :root, :root[data-theme="dark"] {
+  /* 2.1.5: Der dritte Selektor :root:not([data-theme="light"]) hat dieselbe Spezifität wie der Dunkel-Block des Systems
+     (prefers-color-scheme: dark) und steht später; ohne ihn blieb der Druck bei dunklem System dunkel. Alle Tokens,
+     die der Dunkelmodus ändert, werden hier auf die hellen Druckwerte zurückgesetzt (auch Diagrammfarben). */
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
     color-scheme: light;
     --ls-bg: #ffffff; --ls-surface: #ffffff; --ls-surface-2: #f4f3ee; --ls-surface-3: #ebeae4;
-    --ls-text: #1d1d1f; --ls-text-2: #55555a; --ls-line: rgba(0,0,0,.18); --ls-line-strong: rgba(0,0,0,.3);
-    --ls-navy: #1a2b4a; --ls-primary: #1a2b4a; --ls-link: #1a2b4a; --ls-yellow-ink: #8a6d00;
+    --ls-text: #1d1d1f; --ls-text-2: #55555a; --ls-text-3: #8e8e93; --ls-line: rgba(0,0,0,.18); --ls-line-strong: rgba(0,0,0,.3);
+    --ls-navy: #1a2b4a; --ls-navy-2: #223a63; --ls-navy-3: #142238; --ls-yellow-ink: #8a6d00;
+    --ls-primary: #1a2b4a; --ls-primary-hover: #223a63; --ls-primary-active: #142238; --ls-link: #1a2b4a; --ls-focus: #1a2b4a;
+    --ls-brand-btn: #1a2b4a; --ls-on-brand-btn: #ffffff;
     --ls-ok: #1a7a36; --ls-ok-bg: #e3f3e7; --ls-warn: #b25000; --ls-warn-bg: #fdebdd; --ls-danger: #d70015; --ls-danger-bg: #fde4e6; --ls-info: #1a2b4a; --ls-info-bg: #e8edf6;
+    --ls-chart-wp: #1a2b4a; --ls-chart-alt: #8e8e93; --ls-chart-pv: #c9a800; --ls-chart-2: #4f75b8; --ls-chart-grid: rgba(0,0,0,.08); --ls-chart-text: #55555a;
     --ls-shadow-1: none; --ls-shadow-2: none;
   }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   html, body { background: #fff !important; padding: 0 !important; font-size: 11pt; }
   .ls-container { max-width: none; }
+  /* 2.1.5: Blocklayout im Druck. Im Raster (grid) griffen erzwungene Seitenumbrüche nicht, und Karten bekamen
+     einen leeren oberen Rand am Seitenende. Abstände deshalb über Ränder statt gap. */
+  .ls-container, .ls-stack { display: block; }
+  .ls-container > * + *, .ls-stack > * + * { margin-top: var(--ls-s4); }
   .ls-no-print, .ls-home, .ls-toolbar, .ls-btn, nav, .ls-seg, .ls-status, .ls-skeleton,
   .ls-form, form, .ls-help, .ls-toasts, .ls-confirm, .ls-dialog, .ls-items, .ls-stepper, .ls-tiles, .ls-filehint, .ls-details { display: none !important; }
   .ls-print-form { display: block !important; } /* Ausnahme: ein Formular, das bewusst gedruckt wird */
@@ -748,11 +760,16 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
   .ls-header { border-radius: 8px; box-shadow: none; padding: 10mm 8mm 6mm; break-after: avoid; }
   .ls-card, .ls-kpi, .ls-table-wrap, .ls-note, .ls-notiz, .ls-steps > .ls-card { break-inside: avoid; page-break-inside: avoid; box-shadow: none; }
   .ls-card { border-color: rgba(0,0,0,.18); }
+  /* 2.1.5: Lange Berichtskarten (Raum mit vielen Zeilen, Alternativen) dürfen zwischen Zeilen umbrechen, statt als Ganzes
+     auf die nächste Seite zu rutschen und halbe Seiten leer zu lassen. Kopf der Karte und Zeilen bleiben zusammen. */
+  .ls-card--umbruch { break-inside: auto; page-break-inside: auto; }
+  .ls-card__head { break-after: avoid; break-inside: avoid; }
+  .ls-dl > dt, .ls-dl > dd { break-inside: avoid; }
   .ls-section, h2, h3 { break-after: avoid; }
   .ls-table th { position: static; }
   .ls-table-wrap { overflow: visible; }
   a { color: inherit; text-decoration: none; }
-  .ls-footer { font-size: 8.5pt; color: #55555a; max-width: none; }
+  .ls-footer { font-size: 8.5pt; color: #55555a; max-width: none; break-inside: avoid; page-break-inside: avoid; }
   /* Druckkopfzeile: Datum/Projekt stehen im Header, keine Browserkopfzeile nötig */
 }
 </style>

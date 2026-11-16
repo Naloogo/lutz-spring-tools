@@ -16,7 +16,7 @@
 /* ============================================================
    design.css · Lutz Spring GmbH · Heizung · Sanitär · Wärmepumpen
    Gemeinsames Designsystem für alle internen HTML-Tools.
-   Version 2.1.4 · Stand 2026-11-09 (Markenknopf .ls-btn--brand)
+   Version 2.1.5 · Stand 2026-11-13 (Druck immer hell, Blocklayout und Umbruch im Druck)
    Einbinden:  Beim Veröffentlichen fügt _build/inline.py diese Datei in jedes
                Tool ein (Marker design.css:start / design.css:end im HTML).
                Ein Tool bleibt so eine einzelne Datei.
@@ -722,22 +722,34 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
 
 /* ------------------------------------------------------------
    12 · DRUCK / PDF („Als PDF sichern“ aus Safari)
-   Bericht in Hell, Hintergrundfarben erzwungen, Karten ohne Umbruch.
+   Bericht in Hell (auch bei dunklem System und gesetztem Dunkel-Schalter), Hintergrundfarben erzwungen.
+   Karten brechen nicht um; lange Berichtskarten mit .ls-card--umbruch dürfen zwischen Zeilen umbrechen.
+   Seite im Blocklayout (2.1.5), weil das Raster im Druck unzuverlässig umbricht.
    Gedruckt werden nur Kopf, Ergebnis, Bericht und Fuß – nie das Formular. Keine Seitenzahlen.
    ------------------------------------------------------------ */
 @media print {
   @page { size: A4; margin: 12mm 12mm 14mm; }
-  :root, :root[data-theme="dark"] {
+  /* 2.1.5: Der dritte Selektor :root:not([data-theme="light"]) hat dieselbe Spezifität wie der Dunkel-Block des Systems
+     (prefers-color-scheme: dark) und steht später; ohne ihn blieb der Druck bei dunklem System dunkel. Alle Tokens,
+     die der Dunkelmodus ändert, werden hier auf die hellen Druckwerte zurückgesetzt (auch Diagrammfarben). */
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
     color-scheme: light;
     --ls-bg: #ffffff; --ls-surface: #ffffff; --ls-surface-2: #f4f3ee; --ls-surface-3: #ebeae4;
-    --ls-text: #1d1d1f; --ls-text-2: #55555a; --ls-line: rgba(0,0,0,.18); --ls-line-strong: rgba(0,0,0,.3);
-    --ls-navy: #1a2b4a; --ls-primary: #1a2b4a; --ls-link: #1a2b4a; --ls-yellow-ink: #8a6d00;
+    --ls-text: #1d1d1f; --ls-text-2: #55555a; --ls-text-3: #8e8e93; --ls-line: rgba(0,0,0,.18); --ls-line-strong: rgba(0,0,0,.3);
+    --ls-navy: #1a2b4a; --ls-navy-2: #223a63; --ls-navy-3: #142238; --ls-yellow-ink: #8a6d00;
+    --ls-primary: #1a2b4a; --ls-primary-hover: #223a63; --ls-primary-active: #142238; --ls-link: #1a2b4a; --ls-focus: #1a2b4a;
+    --ls-brand-btn: #1a2b4a; --ls-on-brand-btn: #ffffff;
     --ls-ok: #1a7a36; --ls-ok-bg: #e3f3e7; --ls-warn: #b25000; --ls-warn-bg: #fdebdd; --ls-danger: #d70015; --ls-danger-bg: #fde4e6; --ls-info: #1a2b4a; --ls-info-bg: #e8edf6;
+    --ls-chart-wp: #1a2b4a; --ls-chart-alt: #8e8e93; --ls-chart-pv: #c9a800; --ls-chart-2: #4f75b8; --ls-chart-grid: rgba(0,0,0,.08); --ls-chart-text: #55555a;
     --ls-shadow-1: none; --ls-shadow-2: none;
   }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   html, body { background: #fff !important; padding: 0 !important; font-size: 11pt; }
   .ls-container { max-width: none; }
+  /* 2.1.5: Blocklayout im Druck. Im Raster (grid) griffen erzwungene Seitenumbrüche nicht, und Karten bekamen
+     einen leeren oberen Rand am Seitenende. Abstände deshalb über Ränder statt gap. */
+  .ls-container, .ls-stack { display: block; }
+  .ls-container > * + *, .ls-stack > * + * { margin-top: var(--ls-s4); }
   .ls-no-print, .ls-home, .ls-toolbar, .ls-btn, nav, .ls-seg, .ls-status, .ls-skeleton,
   .ls-form, form, .ls-help, .ls-toasts, .ls-confirm, .ls-dialog, .ls-items, .ls-stepper, .ls-tiles, .ls-filehint, .ls-details { display: none !important; }
   .ls-print-form { display: block !important; } /* Ausnahme: ein Formular, das bewusst gedruckt wird */
@@ -748,11 +760,16 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
   .ls-header { border-radius: 8px; box-shadow: none; padding: 10mm 8mm 6mm; break-after: avoid; }
   .ls-card, .ls-kpi, .ls-table-wrap, .ls-note, .ls-notiz, .ls-steps > .ls-card { break-inside: avoid; page-break-inside: avoid; box-shadow: none; }
   .ls-card { border-color: rgba(0,0,0,.18); }
+  /* 2.1.5: Lange Berichtskarten (Raum mit vielen Zeilen, Alternativen) dürfen zwischen Zeilen umbrechen, statt als Ganzes
+     auf die nächste Seite zu rutschen und halbe Seiten leer zu lassen. Kopf der Karte und Zeilen bleiben zusammen. */
+  .ls-card--umbruch { break-inside: auto; page-break-inside: auto; }
+  .ls-card__head { break-after: avoid; break-inside: avoid; }
+  .ls-dl > dt, .ls-dl > dd { break-inside: avoid; }
   .ls-section, h2, h3 { break-after: avoid; }
   .ls-table th { position: static; }
   .ls-table-wrap { overflow: visible; }
   a { color: inherit; text-decoration: none; }
-  .ls-footer { font-size: 8.5pt; color: #55555a; max-width: none; }
+  .ls-footer { font-size: 8.5pt; color: #55555a; max-width: none; break-inside: avoid; page-break-inside: avoid; }
   /* Druckkopfzeile: Datum/Projekt stehen im Header, keine Browserkopfzeile nötig */
 }
 </style>
@@ -764,9 +781,11 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
   .hk-korb-item { grid-template-columns: auto 1fr auto; }
   .hk-korb-item .ls-stepper { min-width: 112px; }
   #bericht { display: none; }
-  @media print { #bericht { display: grid; gap: var(--ls-s4); } }
+  @media print { #bericht { display: block; } #bericht > * + * { margin-top: var(--ls-s4); } }
   .hk-delta { font-size: var(--ls-fs-xs); color: var(--ls-text-2); }
   .ls-item__main .hk-umbruch { white-space: normal; }
+  .hk-alt { border-top: 1px solid var(--ls-line); padding-top: var(--ls-s2); }
+  .hk-alt .ls-hint { margin: 0; flex: 1 1 220px; }
 </style>
 </head>
 <body>
@@ -850,7 +869,7 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
       <button type="button" class="ls-btn ls-btn--primary" id="btnDrucken">Bericht drucken / PDF</button>
       <span class="ls-muted">Räume nach Etagen und Bestellübersicht für die Kundenakte</span>
     </div>
-    <div class="ls-hint ls-mt-2">„Bearbeiten“ lädt den Raum zurück ins Formular; „+ Raum speichern“ überschreibt dann den Eintrag (gleicher Name in gleicher Etage), ein anderer Name legt einen neuen Raum an. „Duplizieren“ legt eine Kopie an. Strg/Cmd + Z macht Änderungen an der Liste rückgängig. „Bestand“ am Raum: Heizkörper bleibt, keine Bestellung, keine Konsolen.</div>
+    <div class="ls-hint ls-mt-2">„Bearbeiten“ lädt den Raum zurück ins Formular; „+ Raum speichern“ überschreibt dann den Eintrag (gleicher Name in gleicher Etage), ein anderer Name legt einen neuen Raum an. „Duplizieren“ legt eine Kopie an. „Alternative“ (Plus) legt zu einem Raum einen weiteren Heizkörper-Vorschlag als Unterpunkt an; „Als Auswahl übernehmen“ tauscht ihn mit der Hauptauswahl. Strg/Cmd + Z macht Änderungen an der Liste rückgängig. „Bestand“ am Raum: Heizkörper bleibt, keine Bestellung, keine Konsolen.</div>
   </section>
 
   <!-- 4 · Eingaben -->
@@ -859,6 +878,11 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
     <!-- 4.1 Raum -->
     <section class="ls-card" aria-labelledby="h-raum">
       <div class="ls-card__head"><h2 id="h-raum">Raum</h2><span class="ls-card__sub">Bedarf und Temperaturen</span></div>
+      <div class="ls-note ls-note--info ls-mb-4" id="altHinweis" hidden>
+        <svg class="ls-note__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.5v.5" stroke-linecap="round"/></svg>
+        <div><b id="altHinweisTitel">Alternative für den Raum.</b> Heizlast, Reserve und Temperaturen stammen aus dem gespeicherten Raum und sind gesperrt. Fläche, Hersteller, Bauform, Typen und Ausführung frei wählen, „Passende Heizkörper suchen“, Zeile antippen, dann „+ Alternative speichern“. Die Alternative wird wie jeder Heizkörper gerechnet und steht als Unterpunkt am Raum; in die Bestellübersicht geht nur die Hauptauswahl.
+          <div class="ls-toolbar ls-mt-2"><button type="button" class="ls-btn ls-btn--secondary ls-btn--sm" id="btnAltAbbrechen">Abbrechen</button></div></div>
+      </div>
       <div class="ls-fields">
         <div class="ls-field">
           <label class="ls-label" for="raumName">Aktueller Raum</label>
@@ -1281,6 +1305,8 @@ input[type="file"].ls-file::file-selector-button { font: inherit; font-weight: 6
    „Duplizieren“ legt eine Kopie an. Ohne Rechenwirkung; Referenzfälle H1–H6 unverändert.
    Erweiterung 2 (Fabian 2026-11-09): Postleitzahl setzt die Norm-Außentemperatur aus normaussentemperatur.json
    (BWP-Klimakarte nach DIN/TS 12831-1, wie auslegung.html); nur Vorbelegung des Feldes, keine Rechenänderung.
+   Erweiterung 5 (Fabian 2026-11-13): Alternativ-Heizkörper je gespeichertem Raum (raum.alternativen[]), ausgelegt mit
+   denselben Funktionen (run, speichereRaum) und den Raumwerten; nur die Hauptauswahl geht in die Bestellübersicht.
    ============================================================ */
 var $ = function (id) { return document.getElementById(id); };
 var PROJEKT_KEY = 'heizkoerper-projekt';
@@ -2801,7 +2827,7 @@ function undo(){
   }catch(e){}
 }
 
-function zeigeUndoHinweis(){ LS.toast('Rückgängig gemacht', 'ok'); }
+function zeigeUndoHinweis(){ if(ALTERNATIVE_FUER!=null) alternativeBeenden(); LS.toast('Rückgängig gemacht', 'ok'); }
 // Tastenkombination Strg+Z / Cmd+Z
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && (e.key==='z'||e.key==='Z') && !e.shiftKey){
@@ -2966,14 +2992,22 @@ function speichereRaum(){
 
 
 function raumSpeichernKlick(){
+  if(ALTERNATIVE_FUER!=null){ alternativeSpeichern(); return; }
   const name=$('raumName').value.trim();
   if(!name){ LS.fehler('raumName', 'Raum benennen, z. B. „Wohnzimmer“.'); $('raumName').focus(); return; }
   LS.fehler('raumName', null);
   if(!GERECHNET){ LS.toast('Erst „Passende Heizkörper suchen“ wählen.', 'danger'); return; }
   AKTUELLE_ETAGE = $('etage').value;
   const vorher = JSON.stringify(PROJEKT.raeume);
+  // Wird ein Raum überschrieben (gleicher Name und Etage), bleiben seine Alternativen erhalten
+  const gleich = r => r.name.toLowerCase()===name.toLowerCase() && (r.etage||'')===(AKTUELLE_ETAGE||'');
+  const alt = PROJEKT.raeume.find(gleich); const alternativen = alt && alt.alternativen ? alt.alternativen : null;
   speichereRaum();
-  if(JSON.stringify(PROJEKT.raeume) !== vorher){ BEARBEITET = null; renderRaumliste(); LS.toast('Gespeichert', 'ok'); }
+  if(JSON.stringify(PROJEKT.raeume) !== vorher){
+    const neu = PROJEKT.raeume.find(gleich);
+    if(alternativen && neu && !neu.alternativen){ neu.alternativen = alternativen; saveState(); }
+    BEARBEITET = null; renderRaumliste(); LS.toast('Gespeichert', 'ok');
+  }
 }
 
 /* ===================== — Rechenteil Altfassung — Konsolenregeln (eine Stelle für Bericht) ===================== */
@@ -3038,14 +3072,23 @@ function renderRaumliste(){
           <label class="ls-check"><input type="checkbox" data-bestand="${idx}"${r.bestand?' checked':''}> Bestand (Raum bleibt)</label>
           <input type="text" class="ls-input ls-grow" data-notiz="${idx}" placeholder="Notiz zum Raum (z. B. Anschluss unten links, Sonderfarbe …)" value="${esc(r.notiz||'')}" aria-label="Notiz zu ${esc(r.name)}">
         </div>
+        ${(r.alternativen||[]).map((a,k)=>`<div class="ls-row ls-mt-2 hk-umbruch hk-alt">
+          <span class="ls-badge">Alternative ${k+1}</span>
+          <div class="ls-hint">${alternativeKurz(a)}</div>
+          <button type="button" class="ls-btn ls-btn--ghost ls-btn--sm" data-alt-swap="${idx}:${k}" title="Tauscht diese Alternative mit der Hauptauswahl des Raums">Als Auswahl übernehmen</button>
+          <button type="button" class="ls-btn ls-btn--ghost ls-btn--sm ls-btn--danger" data-alt-del="${idx}:${k}" aria-label="Alternative ${k+1} löschen" title="Alternative löschen">Löschen</button>
+        </div>`).join('')}
       </div>
-      <div class="ls-item__actions"><button type="button" class="ls-btn ls-btn--ghost" aria-label="Raum bearbeiten" title="Bearbeiten" data-edit="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M12.5 7.5l4 4"/></svg></button><button type="button" class="ls-btn ls-btn--ghost" aria-label="Raum duplizieren" title="Duplizieren" data-dup="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg></button><button type="button" class="ls-btn ls-btn--ghost ls-btn--danger" aria-label="Raum löschen" title="Löschen" data-del="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div>
+      <div class="ls-item__actions"><button type="button" class="ls-btn ls-btn--ghost" aria-label="Alternative zum Raum auslegen" title="Alternative auslegen" data-alt="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg></button><button type="button" class="ls-btn ls-btn--ghost" aria-label="Raum bearbeiten" title="Bearbeiten" data-edit="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M12.5 7.5l4 4"/></svg></button><button type="button" class="ls-btn ls-btn--ghost" aria-label="Raum duplizieren" title="Duplizieren" data-dup="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg></button><button type="button" class="ls-btn ls-btn--ghost ls-btn--danger" aria-label="Raum löschen" title="Löschen" data-del="${idx}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div>
     </div>`;
   }).join('');
+  el.querySelectorAll('button[data-alt]').forEach(b=>b.addEventListener('click',()=>raumBearbeiten(+b.dataset.alt, true)));
+  el.querySelectorAll('button[data-alt-swap]').forEach(b=>b.addEventListener('click',()=>{ const [i,k]=b.dataset.altSwap.split(':').map(Number); alternativeUebernehmen(i,k); }));
+  el.querySelectorAll('button[data-alt-del]').forEach(b=>b.addEventListener('click',()=>{ const [i,k]=b.dataset.altDel.split(':').map(Number); LS.rueckfrage(b, `Alternative ${k+1} löschen?`, 'Löschen', ()=>alternativeLoeschen(i,k)); }));
   el.querySelectorAll('button[data-edit]').forEach(b=>b.addEventListener('click',()=>raumBearbeiten(+b.dataset.edit)));
   el.querySelectorAll('button[data-dup]').forEach(b=>b.addEventListener('click',()=>raumDuplizieren(+b.dataset.dup)));
   el.querySelectorAll('button[data-del]').forEach(b=>{
-    b.addEventListener('click',()=>{ const i=+b.dataset.del; const r=PROJEKT.raeume[i]; LS.rueckfrage(b, `Raum „${r?r.name:''}“ löschen?`, 'Löschen', ()=>{ BEARBEITET=null; loescheRaum(i); LS.toast('Raum gelöscht', 'ok'); }); });
+    b.addEventListener('click',()=>{ const i=+b.dataset.del; const r=PROJEKT.raeume[i]; LS.rueckfrage(b, `Raum „${r?r.name:''}“ löschen?`, 'Löschen', ()=>{ if(ALTERNATIVE_FUER!=null) alternativeBeenden(); BEARBEITET=null; loescheRaum(i); LS.toast('Raum gelöscht', 'ok'); }); });
   });
   el.querySelectorAll('input[data-notiz]').forEach(inp=>{
     inp.addEventListener('input',()=>{ const i=+inp.dataset.notiz; if(PROJEKT.raeume[i]){ PROJEKT.raeume[i].notiz=inp.value; saveState(); } });
@@ -3063,8 +3106,9 @@ function herstellerAusRaum(r){
 }
 function bauformAusRaum(r){ return /Plan/.test(String(r.hersteller||'')) ? 'plan' : 'profil'; }
 function feldSetzen(id, text){ const el=$(id); if(!el) return; el.value = text; el.dispatchEvent(new Event('input',{bubbles:true})); }
-function raumBearbeiten(idx){
+function raumBearbeiten(idx, alsAlternative){
   const r = PROJEKT.raeume[idx]; if(!r) return;
+  if(ALTERNATIVE_FUER!=null){ ALTERNATIVE_FUER = null; alternativeModus(false); }
   BEARBEITET = idx;
   // Hersteller und Bauform zuerst (buildTypeUI baut Typen und Bestandstyp neu)
   const h = herstellerAusRaum(r), bf = bauformAusRaum(r);
@@ -3083,6 +3127,7 @@ function raumBearbeiten(idx){
   if(vs.length===1 && vs[0]){ const ar=document.querySelector(`input[name=ausfuehrung][value=${vs[0]==='V'?'FTV':'FK0'}]`); if(ar) ar.checked=true; }
   else if(vs.length>1){ $('ausfBeide').checked=true; }
   const seite = hks.map(x=>x.anschluss||'').find(Boolean); if(seite){ const sr=document.querySelector(`input[name=anschluss][value=${seite}]`); if(sr) sr.checked=true; }
+  if(alsAlternative){ $('ausfBeide').checked = true; } // Alternative: Ausführung offen (K & V), damit alle Varianten zur Wahl stehen
   aktualisiereAnschlussGruppe();
   document.querySelectorAll('#typenFeld input').forEach(c=>c.checked=true);
   schnellwahlSync(); erweitertKurz();
@@ -3094,6 +3139,14 @@ function raumBearbeiten(idx){
   HK_KORB = [];
   run();
   if(!GERECHNET){ BEARBEITET=null; renderRaumliste(); return; }
+  if(alsAlternative){
+    // Alternative: Raumwerte stehen im Formular und werden gesperrt; die Auswahl ist frei (Empfehlung der Trefferliste vorgewählt)
+    ALTERNATIVE_FUER = idx; alternativeModus(true, r);
+    renderRaumliste();
+    LS.toast(`Alternative für „${r.name}“: Heizkörper wählen, dann „+ Alternative speichern“`, 'ok', 4000);
+    LS.zumErgebnis('h-raum');
+    return;
+  }
   const i = getInputs(); const db = DB();
   if(r.mehrfach){
     HK_KORB = r.hkliste.map(x=>({ typ:x.typ, bh:x.bh, bl:x.bl, tiefe:x.bt, v:x.v||'', w:x.leistung, anzahl:x.anzahl||1, hersteller:x.hersteller, dbName:r.hersteller,
@@ -3121,8 +3174,83 @@ function raumDuplizieren(idx){
   const kopie = JSON.parse(JSON.stringify(r)); kopie.name = r.name + ' (Kopie)'; kopie.ts = Date.now();
   PROJEKT.raeume.splice(idx+1, 0, kopie);
   if(BEARBEITET!=null && BEARBEITET>idx) BEARBEITET++;
+  if(ALTERNATIVE_FUER!=null && ALTERNATIVE_FUER>idx) ALTERNATIVE_FUER++;
   saveState(); renderRaumliste();
   LS.toast(`Raum „${kopie.name}“ angelegt`, 'ok');
+}
+
+/* ---------- Erweiterung 5 (2026-11-13): Alternativ-Heizkörper je gespeichertem Raum ----------
+   Eine Alternative ist ein vollständiges Raumobjekt (wie von speichereRaum erzeugt) in raum.alternativen[].
+   Sie wird mit denselben Funktionen gerechnet wie jede Auslegung; Heizlast, Reserve und Temperaturen kommen
+   aus dem Raum (Felder gesperrt). In Bestellübersicht und Lagerentnahme zählt nur die Hauptauswahl. */
+let ALTERNATIVE_FUER = null; // Index des Raums, für den gerade eine Alternative ausgelegt wird
+const ALT_GESPERRT = ['raumName','heizlast','reserve','raumTemp','normAT','vl','rl','plz'];
+function alternativeModus(an, r){
+  ALT_GESPERRT.forEach(id=>{ const el=$(id); if(el) el.readOnly = !!an; });
+  $('etage').disabled = !!an;
+  document.querySelectorAll('#schnellwahl button').forEach(b=>b.disabled = !!an);
+  $('btnRaumSpeichern').textContent = an ? '+ Alternative speichern' : '+ Raum speichern';
+  $('altHinweis').hidden = !an;
+  if(an && r) $('altHinweisTitel').textContent = `Alternative für „${r.etage?r.etage+' · ':''}${r.name}“.`;
+}
+function alternativeBeenden(){
+  ALTERNATIVE_FUER = null; BEARBEITET = null; alternativeModus(false); renderRaumliste();
+}
+function alternativeKurz(a){
+  if(a.mehrfach){
+    const anz = a.hkliste.reduce((s,h)=>s+(h.anzahl||1),0);
+    return `${anz} HK: ${a.hkliste.map(h=>`${(h.anzahl||1)>1?(h.anzahl+' × '):''}${esc(h.modell)} ${h.bh} × ${h.bl}`).join(' + ')} · Σ ${f0(a.gesamtleistung)} W · ${a.deckung} % · ${a.gedeckt?'gedeckt':'nicht gedeckt'}`;
+  }
+  return `${esc(a.hk.modell)} · ${a.hk.bh} × ${a.hk.bl} mm · ${f0(a.hk.leistung)} W · ${a.hk.deckung} % der Heizlast · ${a.hk.istBestand?'Bestand':'<code>'+esc(a.hk.bestellnr)+'</code>'}${a.hk.ausLager?' · aus Lager':''}`;
+}
+function alternativeSpeichern(){
+  const idx = ALTERNATIVE_FUER; const ziel = PROJEKT.raeume[idx];
+  if(!ziel){ alternativeBeenden(); return; }
+  if(!GERECHNET){ LS.toast('Erst „Passende Heizkörper suchen“ wählen.', 'danger'); return; }
+  // Rechenteil unverändert nutzen: speichereRaum() baut das Raumobjekt aus Formular und Auswahl. Es schreibt hier in eine
+  // leere Hilfsliste; das Ergebnis wird als Alternative an den Raum gehängt. Undo-Stapel und Raumliste bleiben unberührt.
+  AKTUELLE_ETAGE = ziel.etage || '';
+  $('raumName').value = ziel.name;
+  const echteRaeume = PROJEKT.raeume, undoKopie = UNDO_STACK.slice();
+  let neu = null;
+  PROJEKT.raeume = [];
+  try { speichereRaum(); neu = PROJEKT.raeume[0] || null; }
+  finally { PROJEKT.raeume = echteRaeume; UNDO_STACK = undoKopie; }
+  if(!neu){ $('raumName').value = ziel.name; saveState(); renderRaumliste(); return; } // speichereRaum hat gemeldet, was fehlt
+  pushUndo();
+  delete neu.alternativen; delete neu.bestand;
+  ziel.alternativen = (ziel.alternativen || []).concat([neu]);
+  saveState();
+  const nr = ziel.alternativen.length;
+  alternativeBeenden();
+  LS.toast(`Alternative ${nr} zu „${ziel.name}“ gespeichert`, 'ok');
+}
+function alternativeLoeschen(idx, k){
+  const r = PROJEKT.raeume[idx]; if(!r || !r.alternativen || !r.alternativen[k]) return;
+  pushUndo();
+  r.alternativen.splice(k, 1); if(!r.alternativen.length) delete r.alternativen;
+  saveState(); renderRaumliste();
+  LS.toast('Alternative gelöscht', 'ok');
+}
+/* Tauscht Alternative und Hauptauswahl. Raumname, Etage, Raum-Bestand und eine von Hand getippte Notiz bleiben am Raum;
+   der automatische Kundenhinweis (Ansicht ③) gehört zum Heizkörper und wandert mit ihm. */
+function alternativeUebernehmen(idx, k){
+  const r = PROJEKT.raeume[idx]; if(!r || !r.alternativen || !r.alternativen[k]) return;
+  if(ALTERNATIVE_FUER!=null) alternativeBeenden();
+  pushUndo();
+  const autoHinweis = n => typeof n==='string' && n.indexOf('Bitte beachten Sie: Die in diesem Raum')===0;
+  const alt = r.alternativen[k], rest = r.alternativen.filter((_,j)=>j!==k);
+  const alterHaupt = Object.assign({}, r); delete alterHaupt.alternativen; delete alterHaupt.bestand;
+  const raumNotiz = autoHinweis(r.notiz) ? '' : (r.notiz || '');
+  if(!autoHinweis(r.notiz)) delete alterHaupt.notiz;
+  const neu = Object.assign({}, alt, { name: r.name, etage: r.etage, ts: Date.now() });
+  const notiz = [raumNotiz, alt.notiz].filter(Boolean).join(' '); if(notiz) neu.notiz = notiz; else delete neu.notiz;
+  if(r.bestand) neu.bestand = r.bestand;
+  neu.alternativen = rest.slice(0, k).concat([alterHaupt], rest.slice(k));
+  PROJEKT.raeume[idx] = neu;
+  BEARBEITET = null;
+  saveState(); renderRaumliste();
+  LS.toast(`Alternative ${k+1} ist jetzt die Auswahl für „${r.name}“`, 'ok');
 }
 
 /* ---------- Bericht (Druck) nach vorlagen/bericht-vorlage.html ---------- */
@@ -3180,11 +3308,9 @@ function konsoleDl(k, anz){
 function statusBadges(h){
   return (h.istBestand?' <span class="ls-badge ls-badge--info">Bestand – wird nicht getauscht</span>':'') + (!h.istBestand&&h.ausLager?` <span class="ls-badge">aus Lager${h.lagerNotiz?' ('+esc(h.lagerNotiz)+')':''}</span>`:'');
 }
-function raumKarteHTML(r){
-  const kopf = `<div class="ls-card__head"><h3>${esc(r.name)}</h3><span class="ls-card__sub">${r.etage?esc(r.etage)+' · ':''}${r.mehrfach?r.hkliste.reduce((s,h)=>s+(h.anzahl||1),0)+' Heizkörper':'1 Heizkörper'}${r.bestand?' · Bestand, bleibt vorerst':''}</span></div>`;
-  let dl = `<dt>Hersteller / Baureihe</dt><dd>${esc(r.hersteller)}</dd>
-    <dt>Heizlast Raum / Bedarf</dt><dd>${f0(r.heizlast)} W / ${f0(r.bedarf)} W (inkl. ${f0(r.reserve)} % Reserve)</dd>
-    <dt>Systemtemperatur</dt><dd>${tempTxt(r.tv)}/${tempTxt(r.tr)} °C · Raum ${tempTxt(r.tl)} °C</dd>`;
+/* Heizkörper-Zeilen eines Raumobjekts (Hauptauswahl oder Alternative) als Label/Wert-Liste */
+function hkDetailsDl(r, titel){
+  let dl = '';
   if(r.mehrfach){
     dl += `<dt class="ls-dl__strong">Gesamtleistung</dt><dd class="ls-dl__strong">${f0(r.gesamtleistung)} W <span class="ls-badge ls-badge--${r.gedeckt?'ok':'danger'}">${r.deckung} % · ${r.gedeckt?'gedeckt':'nicht gedeckt'}</span></dd>`;
     if(r.noetigeVL) dl += `<dt>Nötige gemeinsame Vorlauftemperatur</dt><dd>${r.noetigeVL==='nicht deckbar'?'<b>auch bei hoher VL nicht deckbar</b>':esc(String(r.noetigeVL).replace('.',','))+' °C (Spreizung '+tempTxt(r.tv-r.tr)+' K)'}</dd>`;
@@ -3198,15 +3324,28 @@ function raumKarteHTML(r){
     });
   } else {
     const h=r.hk;
-    dl += `<dt class="ls-dl__strong">Gewählter Heizkörper</dt><dd class="ls-dl__strong">${esc(h.modell)} · ${h.bh} × ${h.bl} × ${h.bt} mm${h.istBestand?'':' · <code>'+esc(h.bestellnr)+'</code>'}${statusBadges(h)}</dd>
+    dl += `<dt class="ls-dl__strong">${titel}</dt><dd class="ls-dl__strong">${esc(h.modell)} · ${h.bh} × ${h.bl} × ${h.bt} mm${h.istBestand?'':' · <code>'+esc(h.bestellnr)+'</code>'}${statusBadges(h)}</dd>
       <dt>Bezeichnung</dt><dd>${esc(h.klartext)}</dd>
       ${h.istBestand && !r.konsole ? '' : konsoleDl(r.konsole, 1)}
       <dt>Leistung bei ${tempTxt(r.tv)}/${tempTxt(r.tr)}/${tempTxt(r.tl)} °C</dt><dd><b>${f0(h.leistung)} W</b> <span class="ls-badge ls-badge--${h.deckung>=110?'ok':h.deckung>=100?'warn':'danger'}">${h.deckung} % der Heizlast</span></dd>
       <dt>Nötige Vorlauftemperatur für Volldeckung</dt><dd>${esc(String(r.noetigeVL).replace('.',','))} °C (Spreizung ${tempTxt(r.tv-r.tr)} K)</dd>
       <dt>Erreichbare Raumtemperatur</dt><dd>${esc(String(r.erreichbareTemp).replace('.',','))} °C bei ${f1(r.ta)} °C${r.ggLeistung?` (Abgabe ${f0(r.ggLeistung)} W)`:''} · Wunsch ${tempTxt(r.tl)} °C</dd>`;
   }
+  return dl;
+}
+function raumKarteHTML(r){
+  const kopf = `<div class="ls-card__head"><h3>${esc(r.name)}</h3><span class="ls-card__sub">${r.etage?esc(r.etage)+' · ':''}${r.mehrfach?r.hkliste.reduce((s,h)=>s+(h.anzahl||1),0)+' Heizkörper':'1 Heizkörper'}${(r.alternativen||[]).length?' · '+r.alternativen.length+(r.alternativen.length===1?' Alternative':' Alternativen'):''}${r.bestand?' · Bestand, bleibt vorerst':''}</span></div>`;
+  let dl = `<dt>Hersteller / Baureihe</dt><dd>${esc(r.hersteller)}</dd>
+    <dt>Heizlast Raum / Bedarf</dt><dd>${f0(r.heizlast)} W / ${f0(r.bedarf)} W (inkl. ${f0(r.reserve)} % Reserve)</dd>
+    <dt>Systemtemperatur</dt><dd>${tempTxt(r.tv)}/${tempTxt(r.tr)} °C · Raum ${tempTxt(r.tl)} °C</dd>`;
+  dl += hkDetailsDl(r, 'Gewählter Heizkörper');
+  (r.alternativen||[]).forEach((x,k)=>{
+    dl += `<dt class="ls-dl__strong">Alternative ${k+1}</dt><dd class="ls-dl__strong">${esc(x.hersteller)} <span class="ls-badge">nicht in der Bestellübersicht</span></dd>`
+      + hkDetailsDl(x, 'Heizkörper der Alternative')
+      + (x.notiz ? `<dt>Hinweis zur Alternative</dt><dd>${esc(x.notiz)}</dd>` : '');
+  });
   const notiz = r.notiz&&r.notiz.trim() ? `<div class="ls-notiz ls-mt-4"><b>NOTIZ</b> · ${esc(r.notiz)}</div>` : '';
-  return `<section class="ls-card ls-card--tight">${kopf}<dl class="ls-dl">${dl}</dl>${notiz}</section>`;
+  return `<section class="ls-card ls-card--tight ls-card--umbruch">${kopf}<dl class="ls-dl">${dl}</dl>${notiz}</section>`;
 }
 function berichtBauen(){
   const el=$('bericht'); if(!el) return;
@@ -3289,6 +3428,7 @@ function projektSichern(){
   LS.toast('Projektdatei erstellt', 'ok');
 }
 function projektUebernehmen(daten){
+  if(ALTERNATIVE_FUER!=null) alternativeBeenden();
   daten = LS.datei.migrieren(daten, FELD_MAPPING);
   PROJEKT.raeume = daten.raeume;
   PROJEKT.kunde = daten.projekt || '';
@@ -3307,6 +3447,7 @@ LS.datei.laden($('dateiLaden'), function(daten){
 
 /* ---------- Zurücksetzen, Neues Projekt ---------- */
 function felderZuruecksetzen(){
+  if(ALTERNATIVE_FUER!=null){ ALTERNATIVE_FUER = null; alternativeModus(false); }
   const f=$('formEingaben'); f.reset();
   LS.speicher.loeschen(PROJEKT_KEY + '-felder');
   f.querySelectorAll('.ls-error').forEach(e=>{ e.hidden=true; e.textContent=''; }); f.querySelectorAll('[aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'));
@@ -3352,6 +3493,7 @@ $('bestandTyp').addEventListener('change',()=>{ erweitertKurz(); if(GERECHNET) r
 ['reserve','bautiefeBestand'].forEach(id=>$(id).addEventListener('input', erweitertKurz));
 $('formEingaben').addEventListener('submit', function(ev){ ev.preventDefault(); run(); if(GERECHNET) LS.zumErgebnis('ergebnis'); });
 $('btnRaumSpeichern').addEventListener('click', raumSpeichernKlick);
+$('btnAltAbbrechen').addEventListener('click', function(){ alternativeBeenden(); LS.toast('Alternative verworfen', 'ok'); });
 $('btnDrucken').addEventListener('click', druckeBericht);
 $('btnSichern').addEventListener('click', projektSichern);
 $('projekt').addEventListener('input', function(){ projektAnzeigen(); LS.speicher.schreiben(PROJEKT_KEY + '-projekt', PROJEKT.kunde); berichtBauen(); });
